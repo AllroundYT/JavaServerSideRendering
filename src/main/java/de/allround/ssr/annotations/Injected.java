@@ -1,6 +1,7 @@
 package de.allround.ssr.annotations;
 
 import de.allround.ssr.injection.InjectionUtil;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,5 +28,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
+@ApiStatus.Internal
 public @interface Injected {
 }

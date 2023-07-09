@@ -82,6 +82,15 @@ public final class WebApplication {
         return authenticationHandler.get() != null;
     }
 
+    public WebApplication setupStaticResources(String path, String route) {
+        add(route, HttpMethod.GET, StaticHandler.create(path));
+        return this;
+    }
+
+    public WebApplication setupStaticResources(String route) {
+        add(route, HttpMethod.GET, StaticHandler.create());
+        return this;
+    }
 
     public WebApplication add(WebPage page) {
         webPages.add(page);
@@ -132,8 +141,7 @@ public final class WebApplication {
                 parentRoute = restAPI.getClass().getAnnotation(Route.class).value();
             }
             StringBuilder route = new StringBuilder(parentRoute);
-            for (java.lang.reflect.Method method : restAPI.getClass().getMethods()) {
-
+            for (java.lang.reflect.Method method : restAPI.getClass().getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Method.class)) {
                     httpMethod = method.getAnnotation(Method.class).value();
                 }
@@ -193,7 +201,7 @@ public final class WebApplication {
             }
             routing.handler(context -> {
                 injectionUtil.inject(webPage, injectionUtil.contextToInjectionObjectList(context), vertx);
-                webPage.build();
+                context.end(webPage.render(injectionUtil, injectionUtil.contextToInjectionObjectList(context), vertx));
             });
         });
 
