@@ -14,11 +14,14 @@ import java.util.List;
 @Getter
 @Accessors(fluent = true)
 public abstract class Component<T extends Component<?>> {
+    private final List<Style> styles = new ArrayList<>();
+    private final List<Pair<String, String>> attributes = new ArrayList<>();
+    private final List<String> classes = new ArrayList<>();
+    private String id;
+
     public abstract @NotNull Element rawRender();
 
     public abstract Stylesheet renderStyles();
-
-    private final List<Style> styles = new ArrayList<>();
 
     public T styles(Style style, Style... styles) {
         this.styles.add(style);
@@ -26,18 +29,12 @@ public abstract class Component<T extends Component<?>> {
         return (T) this;
     }
 
-
-    private final List<Pair<String, String>> attributes = new ArrayList<>();
-
     @SafeVarargs
     @SuppressWarnings("unchecked")
     public final T addAttributes(Pair<String, String>... pairs) {
         this.attributes.addAll(List.of(pairs));
         return (T) this;
     }
-
-    private final List<String> classes = new ArrayList<>();
-    private String id;
 
     @SuppressWarnings("unchecked")
     public T id(String id) {

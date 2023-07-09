@@ -9,14 +9,14 @@ import org.jsoup.nodes.Element;
 
 @Builder
 public class LineBreak extends Component<LineBreak> {
-    @Override
-    public @NotNull Element rawRender() {
-        return new Element("br").text("");
-    }
-
     @Contract(" -> new")
     public static @NotNull LineBreak use() {
         return new LineBreak();
+    }
+
+    @Override
+    public @NotNull Element rawRender() {
+        return new Element("br").text("");
     }
 
     @Override
