@@ -1,4 +1,4 @@
-package de.allround.ssr.page.htmx.dynamiccomponents;
+package de.allround.ssr.page.htmx.dynamiccomponents.low;
 
 import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.page.htmx.Component;
@@ -11,15 +11,14 @@ import org.jsoup.nodes.Element;
 @Builder
 @Getter
 @Accessors(fluent = true)
-public class Paragraph extends Component<Paragraph> {
-    private final String content;
-    private final long updateDelay;
-    private final String updateRequestURI;
+public class TextInput extends Component<TextInput> {
+
+    private final String placeholder;
 
     @Override
     public @NotNull Element rawRender() {
-        Element element = new Element("p");
-        element.text(content).attr("hx-swap", "innerHtml").attr("hx-trigger", "every " + updateDelay + "ms").attr("hx-get", updateRequestURI);
+        Element element = new Element("input");
+        element.attr("type", "text").attr("placeholder", placeholder);
         return element;
     }
 

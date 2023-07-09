@@ -2,6 +2,7 @@ package de.allround.ssr.page;
 
 import de.allround.ssr.annotations.Injected;
 import de.allround.ssr.injection.InjectionUtil;
+import de.allround.ssr.page.css.Style;
 import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.page.htmx.Component;
 import io.vertx.core.http.HttpServerRequest;
@@ -15,6 +16,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -74,9 +76,8 @@ public abstract class WebPage {
         init();
 
         DOM.forEach(component -> injectionUtil.inject(component, List.of(objects)));
-
-        List<Stylesheet> stylesheets = DOM.stream().map(Component::renderStyles).filter(Objects::nonNull).toList();
-
+        List<Stylesheet> stylesheets = new ArrayList<>(DOM.stream().map(Component::renderStyles).filter(Objects::nonNull).toList());
+        DOM.forEach(component -> stylesheets.add(new Stylesheet().add(component.styles().toArray(new Style[0]))));
         //TODO serve htmx js file as static resource
 
         Document document = Jsoup.parse(template, "", Parser.htmlParser());

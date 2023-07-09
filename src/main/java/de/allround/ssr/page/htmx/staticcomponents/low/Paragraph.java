@@ -1,26 +1,28 @@
-package de.allround.ssr.page.htmx.staticcomponents;
+package de.allround.ssr.page.htmx.staticcomponents.low;
 
 import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.page.htmx.Component;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Element;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Builder
 @Getter
 @Accessors(fluent = true)
-public class Div extends Component<Div> {
-    private final List<Element> elements = new ArrayList<>();
+@Setter
+@AllArgsConstructor
+public class Paragraph extends Component<Paragraph> {
+
+    private final String content;
 
     @Override
     public @NotNull Element rawRender() {
-        Element element = new Element("div");
-        element.appendChildren(elements);
+        Element element = new Element("p");
+        element.text(content);
         return element;
     }
 

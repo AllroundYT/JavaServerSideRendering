@@ -1,17 +1,31 @@
 package de.allround.ssr.page.htmx;
 
+import de.allround.ssr.page.css.Style;
 import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.util.Pair;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Accessors(fluent = true)
 public abstract class Component<T extends Component<?>> {
     public abstract @NotNull Element rawRender();
 
     public abstract Stylesheet renderStyles();
+
+    private final List<Style> styles = new ArrayList<>();
+
+    public T styles(Style style, Style... styles) {
+        this.styles.add(style);
+        this.styles.addAll(List.of(styles));
+        return (T) this;
+    }
+
 
     private final List<Pair<String, String>> attributes = new ArrayList<>();
 

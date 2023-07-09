@@ -1,4 +1,4 @@
-package de.allround.ssr.page.htmx.dynamiccomponents;
+package de.allround.ssr.page.htmx.dynamiccomponents.low;
 
 import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.page.htmx.Component;
