@@ -8,12 +8,17 @@ import java.util.List;
 public class Stylesheet {
     private final List<Style> styles = new ArrayList<>();
 
+    public List<Style> styles() {
+        return styles;
+    }
+
     public Stylesheet add(Style... styles) {
         this.styles.addAll(List.of(styles));
-        for (Style style : styles) {
-            System.out.println("TEST");
-            System.out.println(style.compile());
-        }
+        return this;
+    }
+
+    public Stylesheet add(List<Style> styles) {
+        this.styles.addAll(styles);
         return this;
     }
 

@@ -1,6 +1,5 @@
 package de.allround.ssr.page.htmx.staticcomponents.low;
 
-import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.page.htmx.Component;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -39,10 +38,6 @@ public class UnorderedList extends Component<UnorderedList> {
         return new Element("ul").appendChildren(listItems.stream().map(Component::fullRender).toList());
     }
 
-    @Override
-    public Stylesheet renderStyles() {
-        return null;
-    }
 
     @RequiredArgsConstructor(staticName = "of")
     public static class ListItem extends Component<ListItem> {
@@ -53,9 +48,5 @@ public class UnorderedList extends Component<UnorderedList> {
             return new Element("li").text(content);
         }
 
-        @Override
-        public Stylesheet renderStyles() {
-            return null;
-        }
     }
 }

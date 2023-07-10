@@ -8,6 +8,7 @@ import de.allround.ssr.injection.InjectionUtil;
 import de.allround.ssr.page.WebPage;
 import de.allround.ssr.rest.RestAPI;
 import de.allround.ssr.util.HttpMethod;
+import de.allround.ssr.util.StaticFileProvider;
 import de.allround.ssr.util.Triple;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -26,6 +27,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,15 +84,12 @@ public final class WebApplication {
         return authenticationHandler.get() != null;
     }
 
-    public WebApplication setupStaticResources(String path, String route) {
-        add(route, HttpMethod.GET, StaticHandler.create(path));
+    public WebApplication setupStaticResources(Path path, String route) {
+        staticResources.put(path, route);
         return this;
     }
 
-    public WebApplication setupStaticResources(String route) {
-        add(route, HttpMethod.GET, StaticHandler.create());
-        return this;
-    }
+    private final Map<Path, String> staticResources = new HashMap<>();
 
     public WebApplication add(WebPage page) {
         webPages.add(page);
@@ -166,7 +165,7 @@ public final class WebApplication {
                 }
 
                 routing.handler(context -> {
-                    injectionUtil.inject(restAPI, injectionUtil.contextToInjectionObjectList(context), vertx);
+                    injectionUtil.inject(restAPI, injectionUtil.contextToInjectionObjectList(context), vertx, this);
                     try {
                         method.invoke(restAPI);
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -200,10 +199,14 @@ public final class WebApplication {
                 routing.handler(authorizationHandler);
             }
             routing.handler(context -> {
-                injectionUtil.inject(webPage, injectionUtil.contextToInjectionObjectList(context), vertx);
-                context.end(webPage.render(injectionUtil, injectionUtil.contextToInjectionObjectList(context), vertx));
+                injectionUtil.inject(webPage, injectionUtil.contextToInjectionObjectList(context), vertx, this);
+                context.end(webPage.render(injectionUtil, injectionUtil.contextToInjectionObjectList(context), vertx, this));
             });
         });
+
+        staticResources.forEach((path, route) -> StaticFileProvider.init(path, route, HttpMethod.GET, router));
+
+        StaticFileProvider.init(Path.of("generated-static"), "/generated-static", HttpMethod.GET, router);
 
         httpServer.requestHandler(router);
 

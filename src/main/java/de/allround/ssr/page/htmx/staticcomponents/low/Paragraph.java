@@ -1,6 +1,5 @@
 package de.allround.ssr.page.htmx.staticcomponents.low;
 
-import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.page.htmx.Component;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +25,4 @@ public class Paragraph extends Component<Paragraph> {
         return element;
     }
 
-    @Override
-    public Stylesheet renderStyles() {
-        return null;
-    }
 }

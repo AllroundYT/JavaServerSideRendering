@@ -6,13 +6,15 @@ import lombok.experimental.Accessors;
 
 import java.awt.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Getter
 @Setter
 @Accessors(fluent = true)
 public class Style {
     private final StringBuilder styleAttributes = new StringBuilder();
-    private final StringBuilder selectors = new StringBuilder();
 
     private Color color;
     private Color backgroundColor;
@@ -62,16 +64,34 @@ public class Style {
     private BorderCollapse borderCollapse;
     private CSSSize borderSpacing;
     private CaptionSide captionSide;
+    private BorderStyle borderStyle;
 
-    // Weitere Attribute hinzufügen
+    public enum BorderStyle {
+        DASHED, DOTTED, DOUBLE, GROOVE, HIDDEN, INHERIT, INITIAL, INSET, NONE, OUTSET, RIDGE, SOLID, UNSET
+    }
+
+    private final List<Selector> selectors = new ArrayList<>();
+
+    public Style selector(Selector selector) {
+        this.selectors.add(selector);
+        return this;
+    }
+
 
     public String compile() {
         StringBuilder compiledStyle = new StringBuilder();
 
-        if (selectors.length() == 0) {
+        if (selectors.size() == 0) {
             compiledStyle.append("* {");
         } else {
-            compiledStyle.append(selectors).append(" {");
+            StringBuilder stringBuilder = new StringBuilder();
+            AtomicBoolean selectorBefore = new AtomicBoolean(false);
+            selectors.forEach(selector -> {
+                if (selectorBefore.get()) stringBuilder.append(", ");
+                else selectorBefore.set(true);
+                stringBuilder.append(selector.toString());
+            });
+            compiledStyle.append(stringBuilder.toString().trim()).append(" {");
         }
 
         if (color != null) compiledStyle.append("\ncolor: ").append(toHexString(color)).append(";");
@@ -89,6 +109,8 @@ public class Style {
             compiledStyle.append("\nborder-radius: ").append(borderRadius).append(";");
         if (borderWidth != null && borderWidth.value() != 0)
             compiledStyle.append("\nborder-width: ").append(borderWidth).append(";");
+        if (borderStyle != null)
+            compiledStyle.append("\nborder-style: ").append(borderStyle).append(";");
         if (padding != null && padding.value() != 0) compiledStyle.append("\npadding: ").append(padding).append(";");
         if (font != null)
             compiledStyle.append("\nfont: ").append(font.getFontName()).append(", ").append(font.getStyle()).append(", ").append(font.getSize()).append(";");

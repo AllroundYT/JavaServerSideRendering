@@ -1,6 +1,5 @@
 package de.allround.ssr.page.htmx.dynamiccomponents.low;
 
-import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.page.htmx.Component;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,8 +21,4 @@ public class TextInput extends Component<TextInput> {
         return element;
     }
 
-    @Override
-    public Stylesheet renderStyles() {
-        return null;
-    }
 }

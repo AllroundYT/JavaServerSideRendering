@@ -1,6 +1,5 @@
 package de.allround.ssr.page.htmx.staticcomponents.low;
 
-import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.page.htmx.Component;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,8 +23,4 @@ public class Div extends Component<Div> {
         return element;
     }
 
-    @Override
-    public Stylesheet renderStyles() {
-        return null;
-    }
 }

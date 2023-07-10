@@ -1,6 +1,5 @@
 package de.allround.ssr.page.htmx.staticcomponents.low;
 
-import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.page.htmx.Component;
 import lombok.Builder;
 import org.jetbrains.annotations.Contract;
@@ -19,8 +18,4 @@ public class LineBreak extends Component<LineBreak> {
         return new Element("br").text("");
     }
 
-    @Override
-    public Stylesheet renderStyles() {
-        return null;
-    }
 }

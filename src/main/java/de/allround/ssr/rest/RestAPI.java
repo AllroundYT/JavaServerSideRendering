@@ -1,6 +1,7 @@
 package de.allround.ssr.rest;
 
 import de.allround.ssr.annotations.Injected;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.auth.User;
@@ -11,9 +12,10 @@ import io.vertx.ext.web.*;
  */
 public abstract class RestAPI {
     @Injected
-    protected HttpServerResponse response;
-    @Injected
     protected HttpServerRequest request;
+
+    @Injected
+    protected HttpServerResponse response;
     @Injected
     protected RoutingContext context;
     @Injected
@@ -22,10 +24,10 @@ public abstract class RestAPI {
     protected Route route;
     @Injected
     protected Session session;
-
     @Injected
     protected RequestBody body;
-
     @Injected
     protected ParsedHeaderValues parsedHeaderValues;
+    @Injected
+    protected Vertx vertx;
 }
