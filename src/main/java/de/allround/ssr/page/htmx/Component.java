@@ -8,6 +8,7 @@ import de.allround.ssr.page.css.StyleLibrary;
 import de.allround.ssr.util.Pair;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerRequest;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.web.*;
 import lombok.Getter;
@@ -30,6 +31,8 @@ public abstract class Component<T extends Component<?>> {
     protected WebApplication webApplication;
     @Injected
     protected HttpServerRequest request;
+    @Injected
+    protected HttpServerResponse response;
     @Injected
     protected RoutingContext context;
     @Injected
