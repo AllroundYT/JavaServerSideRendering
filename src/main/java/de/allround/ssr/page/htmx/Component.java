@@ -492,7 +492,7 @@ public abstract class Component<T extends Component<?>> {
     }
 
     private void removeConflictingAttributes(String attributeName) {
-        if (T.RequestSendingAttribute.isRequestSendingAttribute(attributeName)) {
+        if (RequestSendingAttribute.isRequestSendingAttribute(attributeName)) {
             requestSendingAttributes.clear();
         }
     }
