@@ -10,14 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InjectionUtil {
-    public void inject(Object targetObject, List<Object> objectsToInject, Object... objects) {
-        if (objectsToInject == null || objectsToInject.size() == 0) return;
-        List<Object> newList = new ArrayList<>(objectsToInject);
-        if (objects != null) newList.addAll(List.of(objects));
-        performInjection(targetObject, newList);
+    public static void inject(Object targetObject) {
+        performInjection(targetObject, objectsToInject);
     }
 
-    private void performInjection(@NotNull Object targetObject, List<Object> objectsToInject) {
+    public static final List<Object> objectsToInject = new ArrayList<>();
+
+    private static void performInjection(@NotNull Object targetObject, List<Object> objectsToInject) {
         if (targetObject instanceof RestAPI restAPI) {
             for (int i = 0; i < restAPI.getClass().getSuperclass().getDeclaredFields().length; i++) {
                 Field field = restAPI.getClass().getSuperclass().getDeclaredFields()[i];
@@ -49,7 +48,7 @@ public class InjectionUtil {
         }
     }
 
-    public List<Object> contextToInjectionObjectList(RoutingContext context) {
+    public static List<Object> contextToInjectionObjectList(RoutingContext context) {
         List<Object> list = new ArrayList<>(List.of(context));
         if (context.user() != null) list.add(context.user());
         if (context.session() != null) list.add(context.session());

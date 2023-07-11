@@ -1,17 +1,12 @@
-package de.allround.ssr.page.htmx.staticcomponents.low;
+package de.allround.ssr.page.htmx.low.text;
 
 import de.allround.ssr.page.htmx.Component;
-import lombok.Builder;
-import org.jetbrains.annotations.Contract;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Element;
 
-@Builder
+@RequiredArgsConstructor(staticName = "create")
 public class LineBreak extends Component<LineBreak> {
-    @Contract(" -> new")
-    public static @NotNull LineBreak use() {
-        return new LineBreak();
-    }
 
     @Override
     public @NotNull Element rawRender() {

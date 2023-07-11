@@ -1,4 +1,4 @@
-package de.allround.ssr.page.htmx.dynamiccomponents.low;
+package de.allround.ssr.page.htmx.low.input;
 
 import de.allround.ssr.page.htmx.Component;
 import de.allround.ssr.page.htmx.util.HtmxMethod;
@@ -19,24 +19,24 @@ import org.jsoup.nodes.Element;
 @Setter
 public class ServerButton extends Component<ServerButton> {
 
-    private final String text, requestUri, resultDisplaySelector;
+    private final String text, requestUri, target;
     private String confirmMsg;
     private HtmxMethod httpMethod = HtmxMethod.GET;
 
     @Override
     public @NotNull Element rawRender() {
+        clazz("server-button");
         Element element = new Element("button");
-        hxTrigger("click");
-        hxTarget(resultDisplaySelector);
+        htmx().trigger(HTMXUtil.HTMXTrigger.CLICK).target(target);
         if (httpMethod != null) {
             if (httpMethod.equals(HtmxMethod.GET)) {
-                hxGet(requestUri);
+                htmx().get(requestUri);
             } else if (httpMethod.equals(HtmxMethod.POST)) {
-                hxPost(requestUri);
+                htmx().post(requestUri);
             }
         }
         element.text(text);
-        if (confirmMsg != null) hxConfirm(confirmMsg);
+        if (confirmMsg != null) htmx().confirm(confirmMsg);
         return element;
     }
 }

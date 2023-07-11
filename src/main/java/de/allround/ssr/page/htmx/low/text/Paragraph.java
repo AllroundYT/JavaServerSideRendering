@@ -1,24 +1,25 @@
-package de.allround.ssr.page.htmx.dynamiccomponents.low;
+package de.allround.ssr.page.htmx.low.text;
 
 import de.allround.ssr.page.htmx.Component;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Element;
 
-@Builder
+@RequiredArgsConstructor(staticName = "create")
 @Getter
 @Accessors(fluent = true)
+@Setter
 public class Paragraph extends Component<Paragraph> {
+
     private final String content;
-    private final long updateDelay;
-    private final String updateRequestURI;
 
     @Override
     public @NotNull Element rawRender() {
         Element element = new Element("p");
-        element.text(content).attr("hx-swap", "innerHtml").attr("hx-trigger", "every " + updateDelay + "ms").attr("hx-get", updateRequestURI);
+        element.text(content);
         return element;
     }
 

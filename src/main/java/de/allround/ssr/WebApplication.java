@@ -165,7 +165,9 @@ public final class WebApplication {
                 }
 
                 routing.handler(context -> {
-                    injectionUtil.inject(restAPI, injectionUtil.contextToInjectionObjectList(context), vertx, this);
+                    InjectionUtil.objectsToInject.clear();
+                    InjectionUtil.objectsToInject.addAll(List.of(InjectionUtil.contextToInjectionObjectList(context), vertx, this));
+                    InjectionUtil.inject(restAPI);
                     try {
                         method.invoke(restAPI);
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -199,8 +201,10 @@ public final class WebApplication {
                 routing.handler(authorizationHandler);
             }
             routing.handler(context -> {
-                injectionUtil.inject(webPage, injectionUtil.contextToInjectionObjectList(context), vertx, this);
-                context.end(webPage.render(injectionUtil, injectionUtil.contextToInjectionObjectList(context), vertx, this));
+                InjectionUtil.objectsToInject.clear();
+                InjectionUtil.objectsToInject.addAll(List.of(InjectionUtil.contextToInjectionObjectList(context), vertx, this));
+                InjectionUtil.inject(webPage);
+                context.end(webPage.render());
             });
         });
 

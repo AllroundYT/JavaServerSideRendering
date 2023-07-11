@@ -2,7 +2,7 @@ package de.allround.ssr.page;
 
 import de.allround.ssr.WebApplication;
 import de.allround.ssr.annotations.Injected;
-import de.allround.ssr.injection.InjectionUtil;
+import de.allround.ssr.page.css.Style;
 import de.allround.ssr.page.css.Stylesheet;
 import de.allround.ssr.page.htmx.Component;
 import io.vertx.core.Vertx;
@@ -57,6 +57,13 @@ public abstract class WebPage {
     @Setter(AccessLevel.PRIVATE)
     protected Vertx vertx;
 
+    private final List<Style> styles = new ArrayList<>();
+
+    public WebPage style(Style... styles) {
+        this.styles.addAll(List.of(styles));
+        return this;
+    }
+
     private String lang = "de";
     private String title = "Generated Webpage";
     private String template = """
@@ -81,10 +88,9 @@ public abstract class WebPage {
     }
 
     @SneakyThrows
-    public String render(InjectionUtil injectionUtil, Object... objects) {
+    public String render() {
         DOM.clear();
         init();
-        DOM.forEach(component -> injectionUtil.inject(component, List.of(objects)));
         List<Stylesheet> stylesheets = new ArrayList<>(DOM.stream().map(component -> new Stylesheet().add(component.styles())).filter(Objects::nonNull).toList());
 
         Document document = Jsoup.parse(template, "", Parser.htmlParser());

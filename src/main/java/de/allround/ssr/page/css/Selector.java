@@ -16,6 +16,10 @@ public class Selector {
     private final List<String> tags = new ArrayList<>();
     private String id;
 
+    public static Selector byClass(String clazz) {
+        return new Selector().clazz(clazz);
+    }
+
     public Selector clazz(String clazz) {
         this.clazzes.add(clazz);
         return this;

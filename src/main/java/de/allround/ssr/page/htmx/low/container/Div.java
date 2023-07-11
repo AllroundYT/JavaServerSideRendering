@@ -1,25 +1,24 @@
-package de.allround.ssr.page.htmx.staticcomponents.low;
+package de.allround.ssr.page.htmx.low.container;
 
 import de.allround.ssr.page.htmx.Component;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Element;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Builder
+@RequiredArgsConstructor(staticName = "create")
 @Getter
 @Accessors(fluent = true)
 public class Div extends Component<Div> {
-    private final List<Element> elements = new ArrayList<>();
+    private final List<? extends Component<?>> components;
 
     @Override
     public @NotNull Element rawRender() {
         Element element = new Element("div");
-        element.appendChildren(elements);
+        element.appendChildren(components.stream().map(Component::fullRender).toList());
         return element;
     }
 

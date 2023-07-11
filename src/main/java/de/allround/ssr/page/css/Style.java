@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Accessors(fluent = true)
 public class Style {
     private final StringBuilder styleAttributes = new StringBuilder();
-
+    private final List<Selector> selectors = new ArrayList<>();
     private Color color;
     private Color backgroundColor;
     private CSSSize borderTop;
@@ -66,17 +66,10 @@ public class Style {
     private CaptionSide captionSide;
     private BorderStyle borderStyle;
 
-    public enum BorderStyle {
-        DASHED, DOTTED, DOUBLE, GROOVE, HIDDEN, INHERIT, INITIAL, INSET, NONE, OUTSET, RIDGE, SOLID, UNSET
-    }
-
-    private final List<Selector> selectors = new ArrayList<>();
-
     public Style selector(Selector selector) {
         this.selectors.add(selector);
         return this;
     }
-
 
     public String compile() {
         StringBuilder compiledStyle = new StringBuilder();
@@ -166,10 +159,14 @@ public class Style {
         return compiledStyle.toString();
     }
 
-
     // Hilfsmethode, um die Farbwerte als hexadezimalen String zu formatieren
     private String toHexString(Color color) {
         return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+
+    public enum BorderStyle {
+        DASHED, DOTTED, DOUBLE, GROOVE, HIDDEN, INHERIT, INITIAL, INSET, NONE, OUTSET, RIDGE, SOLID, UNSET
     }
 
     public enum SizeType {
