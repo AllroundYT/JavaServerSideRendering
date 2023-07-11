@@ -10,9 +10,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.web.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Element;
@@ -22,7 +20,6 @@ import java.util.*;
 
 @Getter
 @Accessors(fluent = true)
-@Setter
 public abstract class Component<T extends Component<?>> {
     private final List<Style> styles = new ArrayList<>();
     private final List<Pair<String, String>> attributes = new ArrayList<>();
@@ -30,31 +27,22 @@ public abstract class Component<T extends Component<?>> {
     private final Map<String, String> hxAttributes = new HashMap<>();
     private final EnumSet<RequestSendingAttribute> requestSendingAttributes = EnumSet.noneOf(RequestSendingAttribute.class);
     @Injected
-    @Setter(AccessLevel.PRIVATE)
     protected WebApplication webApplication;
     @Injected
-    @Setter(AccessLevel.PRIVATE)
     protected HttpServerRequest request;
     @Injected
-    @Setter(AccessLevel.PRIVATE)
     protected RoutingContext context;
     @Injected
-    @Setter(AccessLevel.PRIVATE)
     protected User user;
     @Injected
-    @Setter(AccessLevel.PRIVATE)
     protected Route route;
     @Injected
-    @Setter(AccessLevel.PRIVATE)
     protected Session session;
     @Injected
-    @Setter(AccessLevel.PRIVATE)
     protected RequestBody body;
     @Injected
-    @Setter(AccessLevel.PRIVATE)
     protected ParsedHeaderValues parsedHeaderValues;
     @Injected
-    @Setter(AccessLevel.PRIVATE)
     protected Vertx vertx;
     private String id = "ID" + UUID.randomUUID().toString().replace("-", "");
 
