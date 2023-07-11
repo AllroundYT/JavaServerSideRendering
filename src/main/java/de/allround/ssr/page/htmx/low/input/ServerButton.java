@@ -27,16 +27,16 @@ public class ServerButton extends Component<ServerButton> {
     public @NotNull Element rawRender() {
         clazz("server-button");
         Element element = new Element("button");
-        htmx().trigger(HTMXUtil.HTMXTrigger.CLICK).target(target);
+        trigger(HTMXTrigger.CLICK).target(target);
         if (httpMethod != null) {
             if (httpMethod.equals(HtmxMethod.GET)) {
-                htmx().get(requestUri);
+                get(requestUri);
             } else if (httpMethod.equals(HtmxMethod.POST)) {
-                htmx().post(requestUri);
+                post(requestUri);
             }
         }
         element.text(text);
-        if (confirmMsg != null) htmx().confirm(confirmMsg);
+        if (confirmMsg != null) confirm(confirmMsg);
         return element;
     }
 }
