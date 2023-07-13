@@ -14,7 +14,7 @@ import java.util.List;
 public class Div extends Container<Div, Component<?>> {
 
     private Div(List<Component<?>> components) {
-        super("div", components);
+        super(components, "div");
     }
 
     @Contract("_ -> new")
