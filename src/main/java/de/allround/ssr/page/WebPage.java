@@ -13,13 +13,10 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
 import lombok.AccessLevel;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.parser.Parser;
 
 import java.net.URI;
 import java.util.*;
@@ -48,17 +45,6 @@ public abstract class WebPage {
     private Vertx vertx;
     private String lang = "de";
     private String title = "Generated Webpage";
-    private String template = """
-            <html lang=%LANG%>
-            <head>
-            <title>%TITLE%</title>
-            </head>
-            <body>
-            </body>
-            </html>
-            """
-            .replace("%LANG%", lang)
-            .replace("%TITLE%", title);
 
     public WebPage useSSE() {
         extensions.add("/sse.js");
@@ -97,23 +83,20 @@ public abstract class WebPage {
         return this;
     }
 
-    public void updateTemplate() {
-        template = template
-                .replace("%LANG%", lang)
-                .replace("%TITLE%", title);
-    }
 
-    @SneakyThrows
     public String render() {
         DOM.clear();
         init();
-        updateTemplate();
         DOM.forEach(component -> component.context(context).vertx(vertx).page(this));
         List<Stylesheet> stylesheets = DOM.stream().map(Component::stylesheet).collect(Collectors.toList());
         styles.forEach(style -> stylesheets.add(new Stylesheet().add(style)));
-        Document document = Jsoup.parse(template, "", Parser.htmlParser());
-        Element head = document.getElementsByTag("head").get(0);
-        Element body = document.getElementsByTag("body").get(0);
+        Document document = new Document("");
+
+        Element head = document.head();
+        Element body = document.body();
+
+        Objects.requireNonNull(document.getElementsByTag("html").first()).attr("lang", lang);
+        head.appendChild(new Element("title").text(title));
         head.appendChildren(stylesheets.stream().map(Stylesheet::toStyleTag).filter(Objects::nonNull).toList()).append(
                 "<script src=\"//" + URI.create(context.request().absoluteURI()).getAuthority() + "/htmx/htmx.min.js\" />"
         );
