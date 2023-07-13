@@ -8,7 +8,7 @@
     }
 
     function handleSSRScroll(event) {
-        var position = event.target.getAttribute('ssr-scroll');
+        const position = event.target.getAttribute('ssr-scroll');
         if (position === 'bottom' || position === 'top') {
             scrollElementTo(event.target, position);
         }
@@ -16,30 +16,24 @@
 
     htmx.defineExtension('ssr-utils', {
         onEvent: function (name, evt) {
+            const target = evt.target;
+            const scrollAttribute = target.getAttribute('ssr-scroll');
             if (name === 'htmx:afterSettle') {
-                var target = evt.target;
-                var scrollAttribute = target.getAttribute('ssr-scroll');
                 if (scrollAttribute) {
                     scrollElementTo(target, scrollAttribute);
                 }
             }
             if (name === 'htmx:configRequest') {
-                var target = evt.target;
-                var scrollAttribute = target.getAttribute('ssr-scroll');
                 if (scrollAttribute) {
                     evt.parameters.ssrScroll = scrollAttribute;
                 }
             }
             if (name === 'htmx:afterProcessNode') {
-                var target = evt.elt;
-                var scrollAttribute = target.getAttribute('ssr-scroll');
                 if (scrollAttribute) {
                     scrollElementTo(target, scrollAttribute);
                 }
             }
             if (name === 'htmx:beforeProcessNode') {
-                var target = evt.elt;
-                var scrollAttribute = target.getAttribute('ssr-scroll');
                 if (scrollAttribute) {
                     target.removeAttribute('ssr-scroll');
                 }
