@@ -18,10 +18,10 @@ import javax.validation.constraints.Min;
 @Setter
 @AllArgsConstructor
 public class Headline extends Component<Headline> {
+    private final String content;
     @Min(1)
     @Max(6)
     private int type = 1;
-    private final String content;
 
     @Override
     public @NotNull Element rawRender() {

@@ -20,14 +20,14 @@ import org.jsoup.nodes.Element;
 public class ServerButton extends Component<ServerButton> {
 
     private final String text, requestUri, target;
-    private String confirmMsg;
+    private String confirm;
     private HtmxMethod httpMethod = HtmxMethod.GET;
 
     @Override
     public @NotNull Element rawRender() {
         clazz("server-button");
         Element element = new Element("button");
-        trigger(HTMXTrigger.CLICK).target(target);
+        trigger("click").target(target);
         if (httpMethod != null) {
             if (httpMethod.equals(HtmxMethod.GET)) {
                 get(requestUri);
@@ -36,7 +36,7 @@ public class ServerButton extends Component<ServerButton> {
             }
         }
         element.text(text);
-        if (confirmMsg != null) confirm(confirmMsg);
+        if (confirm != null) confirm(confirm);
         return element;
     }
 }

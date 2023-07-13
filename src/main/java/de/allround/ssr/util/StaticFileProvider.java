@@ -19,11 +19,6 @@ public class StaticFileProvider implements Handler<RoutingContext> {
         this.localFilePath = localFilePath;
     }
 
-    @Override
-    public void handle(@NotNull RoutingContext context) {
-        context.response().sendFile(String.valueOf(localFilePath));
-    }
-
     public static void init(Path filePath, String route, HttpMethod method, Router router) {
         if (Files.isDirectory(filePath)) {
             try (Stream<Path> pathStream = Files.list(filePath)) {
@@ -38,6 +33,11 @@ public class StaticFileProvider implements Handler<RoutingContext> {
             StaticFileProvider provider = new StaticFileProvider(filePath);
             router.route(method.getHttpMethod(), route).handler(provider);
         }
+    }
+
+    @Override
+    public void handle(@NotNull RoutingContext context) {
+        context.response().sendFile(String.valueOf(localFilePath));
     }
 
 

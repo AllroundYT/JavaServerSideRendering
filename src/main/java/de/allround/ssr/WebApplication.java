@@ -4,9 +4,9 @@ import de.allround.ssr.annotations.Authentication;
 import de.allround.ssr.annotations.Authorization;
 import de.allround.ssr.annotations.Method;
 import de.allround.ssr.annotations.Route;
-import de.allround.ssr.injection.InjectionUtil;
 import de.allround.ssr.page.WebPage;
 import de.allround.ssr.rest.RestAPI;
+import de.allround.ssr.util.HtmxSourceUpdater;
 import de.allround.ssr.util.HttpMethod;
 import de.allround.ssr.util.StaticFileProvider;
 import de.allround.ssr.util.Triple;
@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -49,10 +50,10 @@ public final class WebApplication {
     private final AtomicReference<AuthenticationHandler> authenticationHandler = new AtomicReference<>();
     private final AtomicReference<HttpServer> httpServer = new AtomicReference<>();
     private final AtomicReference<Router> router = new AtomicReference<>();
-    private final InjectionUtil injectionUtil = new InjectionUtil();
+    private final Map<Path, String> staticResources = new HashMap<>();
     private Vertx vertx = Vertx.vertx();
     private SessionStore sessionStore = LocalSessionStore.create(vertx);
-    private final List<Handler<RoutingContext>> defaultHandlers = List.of(
+    private final List<Handler<RoutingContext>> requiredHandlers = List.of(
             BodyHandler.create(),
             SessionHandler.create(sessionStore),
             HSTSHandler.create(),
@@ -89,8 +90,6 @@ public final class WebApplication {
         return this;
     }
 
-    private final Map<Path, String> staticResources = new HashMap<>();
-
     public WebApplication add(WebPage page) {
         webPages.add(page);
         return this;
@@ -105,6 +104,7 @@ public final class WebApplication {
         this.restAPIS.add(restAPI);
         return this;
     }
+
 
     public void launch() {
         HttpServer httpServer;
@@ -126,9 +126,12 @@ public final class WebApplication {
             });
         }
 
-        defaultHandlers.forEach(handler -> router.route("/*").handler(handler));
+        requiredHandlers.forEach(handler -> router.route("/*").handler(handler));
+
+
         errorHandlers.forEach(router::errorHandler);
         customHandlers.forEach(triple -> router.route(triple.second().getHttpMethod(), triple.first()).handler(triple.third()));
+
 
         //Register REST API
 
@@ -165,15 +168,14 @@ public final class WebApplication {
                 }
 
                 routing.handler(context -> {
-                    InjectionUtil.objectsToInject.clear();
-                    InjectionUtil.objectsToInject.addAll(List.of(InjectionUtil.contextToInjectionObjectList(context), vertx, this));
-                    InjectionUtil.inject(restAPI);
                     try {
-                        method.invoke(restAPI);
+                        method.invoke(restAPI.vertx(vertx).context(context));
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
                 });
+
+
                 route = new StringBuilder(parentRoute);
             }
         });
@@ -201,19 +203,24 @@ public final class WebApplication {
                 routing.handler(authorizationHandler);
             }
             routing.handler(context -> {
-                InjectionUtil.objectsToInject.clear();
-                InjectionUtil.objectsToInject.addAll(List.of(InjectionUtil.contextToInjectionObjectList(context), vertx, this));
-                InjectionUtil.inject(webPage);
+                webPage.context(context);
                 context.end(webPage.render());
             });
         });
 
         staticResources.forEach((path, route) -> StaticFileProvider.init(path, route, HttpMethod.GET, router));
 
-        StaticFileProvider.init(Path.of("generated-static"), "/generated-static", HttpMethod.GET, router);
+        copyResourceFiles();
+        StaticFileProvider.init(Path.of("htmx"), "/htmx", HttpMethod.GET, router);
 
         httpServer.requestHandler(router);
 
         httpServer.listen(port);
+
+        CompletableFuture.runAsync(new HtmxSourceUpdater());
+    }
+
+    public void copyResourceFiles() {
+        //TODO: copy files for htmx and extensions from resource folder into htmx folder
     }
 }

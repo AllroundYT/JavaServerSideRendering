@@ -2,24 +2,28 @@ package de.allround.ssr.page.htmx.low.container;
 
 import de.allround.ssr.page.htmx.Component;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jsoup.nodes.Element;
 
 import java.util.List;
 
-@RequiredArgsConstructor(staticName = "create")
+
 @Getter
 @Accessors(fluent = true)
-public class Div extends Component<Div> {
-    private final List<? extends Component<?>> components;
+public class Div extends Container<Div, Component<?>> {
 
-    @Override
-    public @NotNull Element rawRender() {
-        Element element = new Element("div");
-        element.appendChildren(components.stream().map(Component::fullRender).toList());
-        return element;
+    private Div(List<Component<?>> components) {
+        super("div", components);
     }
 
+    @Contract("_ -> new")
+    public static @NotNull Div create(List<Component<?>> components) {
+        return new Div(components);
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull Div create(Component<?>... components) {
+        return new Div(List.of(components));
+    }
 }

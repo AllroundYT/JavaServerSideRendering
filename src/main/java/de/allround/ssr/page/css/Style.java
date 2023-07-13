@@ -1,21 +1,27 @@
 package de.allround.ssr.page.css;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jsoup.nodes.Element;
 
 import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Getter
 @Setter
 @Accessors(fluent = true)
+@SuppressWarnings("all")
 public class Style {
     private final StringBuilder styleAttributes = new StringBuilder();
     private final List<Selector> selectors = new ArrayList<>();
+    private final Map<String, String> custom = new HashMap<>();
     private Color color;
     private Color backgroundColor;
     private CSSSize borderTop;
@@ -26,7 +32,7 @@ public class Style {
     private CSSSize borderWidth;
     private CSSSize padding;
     private Font font;
-    private CSSSize textAlign;
+    private TextAlign textAlign; //TODO
     private TextDecoration textDecoration;
     private Display display;
     private CSSSize margin;
@@ -71,6 +77,86 @@ public class Style {
         return this;
     }
 
+    public Style addToElement(Element element) {
+        StringBuilder compiledStyle = new StringBuilder();
+        if (color != null) compiledStyle.append(" color: ").append(toHexString(color)).append(";");
+        if (backgroundColor != null)
+            compiledStyle.append(" background-color: ").append(toHexString(backgroundColor)).append(";");
+        if (borderTop != null && borderTop.value() != 0)
+            compiledStyle.append(" border-top: ").append(borderTop).append(";");
+        if (borderBottom != null && borderBottom.value() != 0)
+            compiledStyle.append(" border-bottom: ").append(borderBottom).append(";");
+        if (borderLeft != null && borderLeft.value() != 0)
+            compiledStyle.append(" border-left: ").append(borderLeft).append(";");
+        if (borderRight != null && borderRight.value() != 0)
+            compiledStyle.append(" border-right: ").append(borderRight).append(";");
+        if (borderRadius != null && borderRadius.value() != 0)
+            compiledStyle.append(" border-radius: ").append(borderRadius).append(";");
+        if (borderWidth != null && borderWidth.value() != 0)
+            compiledStyle.append(" border-width: ").append(borderWidth).append(";");
+        if (borderStyle != null)
+            compiledStyle.append(" border-style: ").append(borderStyle).append(";");
+        if (padding != null && padding.value() != 0) compiledStyle.append(" padding: ").append(padding).append(";");
+        if (font != null)
+            compiledStyle.append(" font: ").append(font.getFontName()).append(", ").append(font.getStyle()).append(", ").append(font.getSize()).append(";");
+        if (textAlign != null) compiledStyle.append(" text-align: ").append(textAlign.value()).append(";");
+        if (textDecoration != null) compiledStyle.append(" text-decoration: ").append(textDecoration).append(";");
+        if (display != null) compiledStyle.append(" display: ").append(display).append(";");
+        if (margin != null && margin.value() != 0) compiledStyle.append(" margin: ").append(margin).append(";");
+        if (width != null && width.value() != 0) compiledStyle.append(" width: ").append(width).append(";");
+        if (height != null && height.value() != 0) compiledStyle.append(" height: ").append(height).append(";");
+        if (backgroundImage != null)
+            compiledStyle.append(" background-image: url(").append(backgroundImage).append(");");
+        if (backgroundRepeat != null)
+            compiledStyle.append(" background-repeat: ").append(backgroundRepeat).append(";");
+        if (backgroundPosition != null)
+            compiledStyle.append(" background-position: ").append(backgroundPosition).append(";");
+        if (backgroundSize != null) compiledStyle.append(" background-size: ").append(backgroundSize).append(";");
+        if (boxShadow != null) compiledStyle.append(" box-shadow: ").append(boxShadow).append(";");
+        if (textShadow != null) compiledStyle.append(" text-shadow: ").append(textShadow).append(";");
+        if (opacity >= 0 && opacity <= 1) compiledStyle.append(" opacity: ").append(opacity).append(";");
+        if (transition != null) compiledStyle.append(" transition: ").append(transition).append(";");
+        if (transform != null) compiledStyle.append(" transform: ").append(transform).append(";");
+        if (cursor != null) compiledStyle.append(" cursor: ").append(cursor).append(";");
+        if (zIndex >= 0) compiledStyle.append(" z-index: ").append(zIndex).append(";");
+        if (overflow != null) compiledStyle.append(" overflow: ").append(overflow).append(";");
+        if (visibility != null) compiledStyle.append(" visibility: ").append(visibility).append(";");
+        if (lineHeight != null) compiledStyle.append(" line-height: ").append(lineHeight).append(";");
+        if (fontStyle != null) compiledStyle.append(" font-style: ").append(fontStyle).append(";");
+        if (fontWeight != null) compiledStyle.append(" font-weight: ").append(fontWeight).append(";");
+        if (textTransform != null) compiledStyle.append(" text-transform: ").append(textTransform).append(";");
+        if (textIndent != null && textIndent.value() != 0)
+            compiledStyle.append(" text-indent: ").append(textIndent).append(";");
+        if (whiteSpace != null) compiledStyle.append(" white-space: ").append(whiteSpace).append(";");
+        if (wordSpacing != null && wordSpacing.value() != 0)
+            compiledStyle.append(" word-spacing: ").append(wordSpacing).append(";");
+        if (letterSpacing != null && letterSpacing.value() != 0)
+            compiledStyle.append(" letter-spacing: ").append(letterSpacing).append(";");
+        if (listStyleType != null) compiledStyle.append(" list-style-type: ").append(listStyleType).append(";");
+        if (listStylePosition != null)
+            compiledStyle.append(" list-style-position: ").append(listStylePosition).append(";");
+        if (verticalAlign != null) compiledStyle.append(" vertical-align: ").append(verticalAlign).append(";");
+        if (textOverflow != null) compiledStyle.append(" text-overflow: ").append(textOverflow).append(";");
+        if (pageBreakBefore != null) compiledStyle.append(" page-break-before: ").append(pageBreakBefore).append(";");
+        if (pageBreakAfter != null) compiledStyle.append(" page-break-after: ").append(pageBreakAfter).append(";");
+        if (pageBreakInside != null) compiledStyle.append(" page-break-inside: ").append(pageBreakInside).append(";");
+        if (tableLayout != null) compiledStyle.append(" table-layout: ").append(tableLayout).append(";");
+        if (borderCollapse != null) compiledStyle.append(" border-collapse: ").append(borderCollapse).append(";");
+        if (borderSpacing != null && borderSpacing.value() != 0)
+            compiledStyle.append(" border-spacing: ").append(borderSpacing).append(";");
+        if (captionSide != null) compiledStyle.append(" caption-side: ").append(captionSide).append(";");
+        custom.forEach((s, s2) -> compiledStyle.append(" ").append(s).append(": ").append(s2).append(";"));
+
+        if (element.hasAttr("style")) {
+            String styleAttribute = element.attributes().get("style");
+            styleAttribute += compiledStyle.toString();
+            element.removeAttr("style").attr("style", styleAttribute);
+        } else {
+            element.attr("style", compiledStyle.toString());
+        }
+        return this;
+    }
+
     public String compile() {
         StringBuilder compiledStyle = new StringBuilder();
 
@@ -107,7 +193,7 @@ public class Style {
         if (padding != null && padding.value() != 0) compiledStyle.append("\npadding: ").append(padding).append(";");
         if (font != null)
             compiledStyle.append("\nfont: ").append(font.getFontName()).append(", ").append(font.getStyle()).append(", ").append(font.getSize()).append(";");
-        if (textAlign != null) compiledStyle.append("\ntext-align: ").append(textAlign).append(";");
+        if (textAlign != null) compiledStyle.append("\ntext-align: ").append(textAlign.value()).append(";");
         if (textDecoration != null) compiledStyle.append("\ntext-decoration: ").append(textDecoration).append(";");
         if (display != null) compiledStyle.append("\ndisplay: ").append(display).append(";");
         if (margin != null && margin.value() != 0) compiledStyle.append("\nmargin: ").append(margin).append(";");
@@ -154,14 +240,28 @@ public class Style {
             compiledStyle.append("\nborder-spacing: ").append(borderSpacing).append(";");
         if (captionSide != null) compiledStyle.append("\ncaption-side: ").append(captionSide).append(";");
 
+        custom.forEach((s, s2) -> compiledStyle.append("\n").append(s).append(": ").append(s2).append(";"));
+
         compiledStyle.append("\n}");
 
         return compiledStyle.toString();
     }
 
+    public Style addCustom(String name, String value) {
+        custom.put(name, value);
+        return this;
+    }
+
     // Hilfsmethode, um die Farbwerte als hexadezimalen String zu formatieren
     private String toHexString(Color color) {
         return String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    public static enum TextAlign {
+        CENTER("center"), LEFT("left"), RIGHT("right");
+        private final String value;
     }
 
 

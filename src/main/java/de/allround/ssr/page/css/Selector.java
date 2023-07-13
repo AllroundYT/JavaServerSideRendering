@@ -20,6 +20,11 @@ public class Selector {
         return new Selector().clazz(clazz);
     }
 
+    public static Selector byID(String id) {
+        if (id.startsWith("#")) id = id.replace("#", "#ID");
+        return new Selector().id(id);
+    }
+
     public Selector clazz(String clazz) {
         this.clazzes.add(clazz);
         return this;
