@@ -28,7 +28,10 @@ public class ConsolePage extends WebPage {
                                         .swap("outerHTML focus-scroll:true"),
                                 UnorderedList.create().clazz("console-line-list").scroll(Component.ScrollDestination.BOTTOM),
                                 TextInput.create("Input command...").name("password").id("console-input"),
-                                Button.create().post("/api/console/lines/add").value("Send").target(".console-line-list")
+                                Button.create().trigger("click")
+                                        .post("/api/console/lines/add")
+                                        .value("Send")
+                                        .target(".console-line-list")
                                         .params("#console-input")
                                         .swap("none")
                         )
