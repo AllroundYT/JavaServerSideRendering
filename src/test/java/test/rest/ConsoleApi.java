@@ -3,8 +3,8 @@ package test.rest;
 import de.allround.ssr.annotations.Method;
 import de.allround.ssr.annotations.Route;
 import de.allround.ssr.page.htmx.Component;
-import de.allround.ssr.page.htmx.low.container.ListItem;
-import de.allround.ssr.page.htmx.low.container.UnorderedList;
+import de.allround.ssr.page.htmx.low.list.ListItem;
+import de.allround.ssr.page.htmx.low.list.UnorderedList;
 import de.allround.ssr.rest.RestAPI;
 import de.allround.ssr.sse.SSEManager;
 import de.allround.ssr.sse.SSEModel;
@@ -56,7 +56,7 @@ public class ConsoleApi extends RestAPI {
     @Route("/lines/all")
     @Method(HttpMethod.GET)
     public void getAllConsoleLines() {
-        UnorderedList ul = new UnorderedList().clazz("console-line-list").scroll(Component.ScrollDestination.BOTTOM);
+        UnorderedList ul = UnorderedList.create().clazz("console-line-list").scroll(Component.ScrollDestination.BOTTOM);
         ul.addItems(consoleLines.stream().map(s -> ListItem.of(s).clazz("console-line-list-item")).toList());
         response.headers().add("Content-Type", "text/html");
         response.setStatusCode(200).send(ul.fullRender().outerHtml());

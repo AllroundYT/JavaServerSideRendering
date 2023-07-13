@@ -1,4 +1,4 @@
-package de.allround.ssr.page.htmx.low.container;
+package de.allround.ssr.page.htmx.low.list;
 
 import de.allround.ssr.page.htmx.Component;
 import lombok.RequiredArgsConstructor;

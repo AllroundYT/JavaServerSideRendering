@@ -6,11 +6,10 @@ import de.allround.ssr.page.css.Selector;
 import de.allround.ssr.page.css.Style;
 import de.allround.ssr.page.htmx.Component;
 import de.allround.ssr.page.htmx.low.container.Div;
-import de.allround.ssr.page.htmx.low.container.UnorderedList;
-import de.allround.ssr.page.htmx.low.input.ServerButton;
-import de.allround.ssr.page.htmx.low.input.TextInput;
+import de.allround.ssr.page.htmx.low.form.Button;
+import de.allround.ssr.page.htmx.low.form.TextInput;
+import de.allround.ssr.page.htmx.low.list.UnorderedList;
 import de.allround.ssr.page.htmx.low.text.Headline;
-import de.allround.ssr.page.htmx.util.HtmxMethod;
 
 import java.awt.*;
 
@@ -27,11 +26,10 @@ public class ConsolePage extends WebPage {
                                         .get("/api/console/lines/all")
                                         .target(".console-line-list")
                                         .swap("outerHTML focus-scroll:true"),
-                                new UnorderedList().clazz("console-line-list").scroll(Component.ScrollDestination.BOTTOM),
-                                TextInput.create("Input command...", "input").id("console-input"),
-                                ServerButton.create("Send", "/api/console/lines/add", ".console-line-list")
+                                UnorderedList.create().clazz("console-line-list").scroll(Component.ScrollDestination.BOTTOM),
+                                TextInput.create("Input command...").name("password").id("console-input"),
+                                Button.create().post("/api/console/lines/add").value("Send").target(".console-line-list")
                                         .params("#console-input")
-                                        .httpMethod(HtmxMethod.POST)
                                         .swap("none")
                         )
                         .sseConnect("/api/console/update")
