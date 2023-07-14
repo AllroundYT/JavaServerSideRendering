@@ -8,13 +8,6 @@
     <artifactId>JavaSSRHtmx</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/AllroundYT/JavaServerSideRendering</url>
-        </repository>
-    </distributionManagement>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -23,6 +16,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web-client</artifactId>
+            <version>4.4.2</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web</artifactId>

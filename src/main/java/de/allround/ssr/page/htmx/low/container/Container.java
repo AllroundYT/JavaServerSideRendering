@@ -19,9 +19,31 @@ public abstract class Container<T extends Container<?, ?>, I extends Component<?
 
     @Override
     public @NotNull Element rawRender() {
+        init();
         Element element = new Element(type);
         element.appendChildren(components.stream().map(component -> component.fullRender()).toList());
         return element;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T addChild(I child) {
+        components.add(child);
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T addChildren(I... child) {
+        components.addAll(List.of(child));
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T addChildren(List<I> child) {
+        components.addAll(child);
+        return (T) this;
+    }
+
+    public void init() {
     }
 
     @Override

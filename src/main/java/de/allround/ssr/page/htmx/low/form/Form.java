@@ -15,7 +15,7 @@ public class Form extends Container<Form, Form.FormInputComponent<?>> {
 
     private final String action;
 
-    private Form(String action) {
+    protected Form(String action) {
         super(new ArrayList<>(), "form");
         this.action = action;
     }

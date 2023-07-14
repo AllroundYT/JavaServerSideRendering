@@ -13,7 +13,7 @@ import java.util.List;
 @Accessors(fluent = true)
 public class Div extends Container<Div, Component<?>> {
 
-    private Div(List<Component<?>> components) {
+    protected Div(List<Component<?>> components) {
         super(components, "div");
     }
 

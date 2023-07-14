@@ -1,17 +1,32 @@
 package de.allround.ssr.page.htmx.low.list;
 
 import de.allround.ssr.page.htmx.Component;
-import lombok.RequiredArgsConstructor;
+import de.allround.ssr.page.htmx.low.container.Container;
+import de.allround.ssr.page.htmx.low.text.Paragraph;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jsoup.nodes.Element;
 
-@RequiredArgsConstructor(staticName = "of")
-public class ListItem extends Component<ListItem> {
-    private final String content;
+import java.util.ArrayList;
+import java.util.List;
 
-    @Override
-    public @NotNull Element rawRender() {
-        return new Element("li").text(content);
+
+public class ListItem extends Container<ListItem, Component<?>> {
+
+    protected ListItem() {
+        super(new ArrayList<>(), "li");
     }
 
+    protected ListItem(Component<?>... components) {
+        super(List.of(components), "li");
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull ListItem of(String content) {
+        return new ListItem(Paragraph.create(content));
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull ListItem of(Component<?>... components) {
+        return new ListItem(components);
+    }
 }

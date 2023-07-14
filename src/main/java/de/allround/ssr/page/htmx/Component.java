@@ -37,7 +37,7 @@ public abstract class Component<T extends Component<?>> {
     private final EnumSet<RequestSendingAttribute> requestSendingAttributes = EnumSet.noneOf(RequestSendingAttribute.class);
     private final Map<String, String> extensions = new HashMap<>();
     private final Map<String, Set<String>> attributeMap = new HashMap<>();
-    private final Set<String> ignoredExtensions = new HashSet<>(List.of("method-override", "json-enc"));
+    private final Set<String> ignoredExtensions = new HashSet<>(List.of("method-override", "json-enc", "debug"));
     protected RoutingContext context;
     @Setter(AccessLevel.PRIVATE)
     protected User user;
@@ -216,6 +216,13 @@ public abstract class Component<T extends Component<?>> {
 
     public T confirm(String confirm) {
         addAttribute("hx-confirm", confirm);
+        return (T) this;
+    }
+
+    //DEBUG
+    public T debug() {
+        extensions.put("debug", "debug.js");
+        ignoredExtensions.remove("debug");
         return (T) this;
     }
 

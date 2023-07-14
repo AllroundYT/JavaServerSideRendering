@@ -3,7 +3,7 @@ package de.allround.ssr.page.htmx.low.form;
 public class ResetButton extends Form.FormInputComponent<ResetButton> {
 
 
-    private ResetButton() {
+    protected ResetButton() {
         super("reset");
     }
 

@@ -2,7 +2,7 @@ package de.allround.ssr.page.htmx.low.form;
 
 public class CheckBox extends Form.FormInputComponent<CheckBox> {
 
-    private CheckBox() {
+    protected CheckBox() {
         super("checkbox");
     }
 

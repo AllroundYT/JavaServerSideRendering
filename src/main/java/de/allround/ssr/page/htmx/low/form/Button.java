@@ -2,7 +2,7 @@ package de.allround.ssr.page.htmx.low.form;
 
 public class Button extends Form.FormInputComponent<Button> {
 
-    private Button() {
+    protected Button() {
         super("button");
     }
 

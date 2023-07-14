@@ -2,7 +2,7 @@ package de.allround.ssr.page.htmx.low.form;
 
 public class ColorInput extends Form.FormInputComponent<ColorInput> {
 
-    private ColorInput() {
+    protected ColorInput() {
         super("color");
     }
 

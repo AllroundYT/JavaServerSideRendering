@@ -1,7 +1,7 @@
 package de.allround.ssr.page.htmx.low.form;
 
 public class SubmitButton extends Form.FormInputComponent<SubmitButton> {
-    private SubmitButton() {
+    protected SubmitButton() {
         super("submit");
     }
 

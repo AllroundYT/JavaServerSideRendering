@@ -11,6 +11,7 @@ import io.vertx.ext.web.RequestBody;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
+import io.vertx.ext.web.client.WebClient;
 import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -42,9 +43,17 @@ public abstract class WebPage {
     protected RequestBody requestBody;
     @Setter(AccessLevel.PRIVATE)
     protected Route currentRoute;
-    private Vertx vertx;
-    private String lang = "de";
-    private String title = "Generated Webpage";
+    protected Vertx vertx;
+    protected String lang = "de";
+    protected String title = "Generated Webpage";
+    protected WebClient webClient;
+
+    public WebPage vertx(Vertx vertx) {
+        this.vertx = vertx;
+        this.webClient = WebClient.create(vertx);
+        return this;
+    }
+
 
     public WebPage useSSE() {
         extensions.add("/sse.js");

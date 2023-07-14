@@ -1,7 +1,7 @@
 package de.allround.ssr.page.htmx.low.form;
 
 public class DatetimeLocalInput extends Form.FormInputComponent<DatetimeLocalInput> {
-    private DatetimeLocalInput() {
+    protected DatetimeLocalInput() {
         super("datetime-local");
     }
 

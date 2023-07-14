@@ -26,11 +26,11 @@ public class TextInput extends Form.FormInputComponent<TextInput> {
 
     private String placeholder = "Password";
 
-    public TextInput() {
+    protected TextInput() {
         super("password");
     }
 
-    public TextInput(String placeholder) {
+    protected TextInput(String placeholder) {
         super("password");
         this.placeholder = placeholder;
     }

@@ -16,7 +16,7 @@ public class ImageSubmitButton extends Form.FormInputComponent<ImageSubmitButton
         return new ImageSubmitButton(src, alt, width, height);
     }
 
-    public ImageSubmitButton(String src, String alt, int width, int height) {
+    protected ImageSubmitButton(String src, String alt, int width, int height) {
         super("image");
         this.src = src;
         this.alt = alt;

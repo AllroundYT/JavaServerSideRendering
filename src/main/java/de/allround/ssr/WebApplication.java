@@ -47,7 +47,10 @@ public final class WebApplication {
     private final List<Triple<String, HttpMethod, Handler<RoutingContext>>> customHandlers = new ArrayList<>();
     private final Map<Integer, Handler<RoutingContext>> errorHandlers = new HashMap<>();
     private final List<AuthorizationProvider> authorizationProviders = new ArrayList<>();
-    private final AtomicReference<AuthenticationHandler> authenticationHandler = new AtomicReference<>();
+    private final AtomicReference<AuthenticationHandler> authenticationHandler = new AtomicReference<>(context -> {
+        if (context.user() != null) context.next();
+        else context.response().setStatusCode(403).setStatusMessage("Not authenticated").end();
+    });
     private final AtomicReference<HttpServer> httpServer = new AtomicReference<>();
     private final AtomicReference<Router> router = new AtomicReference<>();
     private final Map<Path, String> staticResources = new HashMap<>();
@@ -67,8 +70,8 @@ public final class WebApplication {
         return this;
     }
 
-    public WebApplication addAuthZProvider(List<AuthorizationProvider> providers) {
-        this.authorizationProviders.addAll(providers);
+    public WebApplication addAuthZProvider(AuthorizationProvider... providers) {
+        this.authorizationProviders.addAll(List.of(providers));
         return this;
     }
 
@@ -81,9 +84,6 @@ public final class WebApplication {
         return authorizationProviders.size() > 0;
     }
 
-    public boolean authNEnabled() {
-        return authenticationHandler.get() != null;
-    }
 
     public WebApplication setupStaticResources(Path path, String route) {
         staticResources.put(path, route);
@@ -152,7 +152,7 @@ public final class WebApplication {
                 }
 
                 io.vertx.ext.web.Route routing = router.route(httpMethod.getHttpMethod(), route.toString().replace("//", "/"));
-                if (method.isAnnotationPresent(Authentication.class) && authNEnabled() || restAPI.getClass().isAnnotationPresent(Authentication.class) && authNEnabled()) {
+                if (method.isAnnotationPresent(Authentication.class) || restAPI.getClass().isAnnotationPresent(Authentication.class)) {
                     routing.handler(authenticationHandler.get());
                 }
                 if (method.isAnnotationPresent(Authorization.class) && authZEnabled()) {
@@ -193,7 +193,7 @@ public final class WebApplication {
             }
 
             io.vertx.ext.web.Route routing = router.route(method.getHttpMethod(), route);
-            if (webPage.getClass().isAnnotationPresent(Authentication.class) && authNEnabled()) {
+            if (webPage.getClass().isAnnotationPresent(Authentication.class)) {
                 routing.handler(authenticationHandler.get());
             }
             if (webPage.getClass().isAnnotationPresent(Authorization.class) && authZEnabled()) {
@@ -203,7 +203,7 @@ public final class WebApplication {
                 routing.handler(authorizationHandler);
             }
             routing.handler(context -> {
-                webPage.context(context);
+                webPage.context(context).vertx(vertx);
                 context.end(webPage.render());
             });
         });

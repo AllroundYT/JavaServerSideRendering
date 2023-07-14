@@ -2,7 +2,7 @@ package de.allround.ssr.page.htmx.low.form;
 
 public class MonthInput extends Form.FormInputComponent<MonthInput> {
 
-    private MonthInput() {
+    protected MonthInput() {
         super("month");
     }
 

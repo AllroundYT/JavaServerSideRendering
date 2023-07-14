@@ -3,7 +3,7 @@ package de.allround.ssr.page.htmx.low.form;
 public class DateInput extends Form.FormInputComponent<DateInput> {
 
 
-    private DateInput() {
+    protected DateInput() {
         super("date");
     }
 

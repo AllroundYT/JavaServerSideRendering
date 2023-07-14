@@ -3,7 +3,7 @@ package de.allround.ssr.page.htmx.low.form;
 public class RadioButton extends Form.FormInputComponent<RadioButton> {
 
 
-    private RadioButton() {
+    protected RadioButton() {
         super("radio");
     }
 

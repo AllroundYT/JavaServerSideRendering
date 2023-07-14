@@ -1,7 +1,7 @@
 package de.allround.ssr.page.htmx.low.form;
 
 public class FileInput extends Form.FormInputComponent<FileInput> {
-    private FileInput() {
+    protected FileInput() {
         super("file");
     }
 
