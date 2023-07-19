@@ -1,6 +1,7 @@
 package de.allround.ssr.page.htmx;
 
 import de.allround.ssr.page.htmx.css.Style;
+import de.allround.ssr.util.Data;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,6 +20,12 @@ import java.util.Set;
 public abstract class Container<T extends Component<?>> extends Component<T> {
     protected final String type;
     protected final List<Component<?>> components = new ArrayList<>();
+    protected Function<Data, List<Component<?>>> initFunction;
+
+    public T init(Function<Data, List<Component<?>>> function) {
+        this.initFunction = function;
+        return (T) this;
+    }
 
     public T add(Component<?>... components) {
         this.components.addAll(List.of(components));
@@ -42,6 +50,7 @@ public abstract class Container<T extends Component<?>> extends Component<T> {
     public RenderFunction preRender() {
         return data -> {
             Element element = new Element(type);
+            components.addAll(initFunction.apply(data));
             components.forEach(component -> element.appendChild(component.render(data)));
             return element;
         };
