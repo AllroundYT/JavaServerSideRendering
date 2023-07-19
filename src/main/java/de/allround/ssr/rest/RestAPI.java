@@ -1,21 +1,14 @@
 package de.allround.ssr.rest;
 
 import de.allround.ssr.page.htmx.Component;
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.HttpServerResponse;
+import de.allround.ssr.util.Data;
 import io.vertx.core.json.Json;
-import io.vertx.ext.auth.User;
-import io.vertx.ext.web.RequestBody;
-import io.vertx.ext.web.Route;
-import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.Session;
-import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 
 @Setter
+@Getter
 @Accessors(fluent = true)
 
 /**
@@ -23,39 +16,15 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class RestAPI {
 
-    protected RoutingContext context;
-    @Setter(AccessLevel.PRIVATE)
-    protected User user;
-    @Setter(AccessLevel.PRIVATE)
-    protected Session session;
-    @Setter(AccessLevel.PRIVATE)
-    protected HttpServerResponse response;
-    @Setter(AccessLevel.PRIVATE)
-    protected HttpServerRequest request;
-    @Setter(AccessLevel.PRIVATE)
-    protected RequestBody requestBody;
-    @Setter(AccessLevel.PRIVATE)
-    protected Route currentRoute;
-    protected Vertx vertx;
+    protected final Data data = new Data();
 
-    protected void sendResponse(Component<?> component) {
-        if (response == null || component == null) return;
-        response.send(component.fullRender().outerHtml());
+    protected void sendResponse(Component<?> oldComponent) {
+        if (data.response() == null || oldComponent == null) return;
+        data.response().send(oldComponent.render(data).outerHtml());
     }
 
     protected void sendResponse(Object component) {
-        if (response == null || component == null) return;
-        response.send(Json.encode(component));
-    }
-
-    public RestAPI context(@NotNull RoutingContext context) {
-        this.context = context;
-        this.user = context.user();
-        this.session = context.session();
-        this.response = context.response();
-        this.request = context.request();
-        this.requestBody = context.body();
-        this.currentRoute = context.currentRoute();
-        return this;
+        if (data.response() == null || component == null) return;
+        data.response().send(Json.encode(component));
     }
 }

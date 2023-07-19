@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.allround.ssr</groupId>
-    <artifactId>JavaSSRHtmx</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
+    <artifactId>JavaServerSideRendering</artifactId>
+    <version>v1.2.0-alpha</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

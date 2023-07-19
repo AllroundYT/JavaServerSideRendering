@@ -41,6 +41,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Accessors(fluent = true)
 @AllArgsConstructor(staticName = "build")
 @NoArgsConstructor(staticName = "build")
+@SuppressWarnings("ALL")
 public final class WebApplication {
     private final List<WebPage> webPages = new ArrayList<>();
     private final List<RestAPI> restAPIS = new ArrayList<>();
@@ -81,13 +82,12 @@ public final class WebApplication {
     }
 
     public boolean authZEnabled() {
-        return authorizationProviders.size() > 0;
+        return !authorizationProviders.isEmpty();
     }
 
 
-    public WebApplication setupStaticResources(Path path, String route) {
-        staticResources.put(path, route);
-        return this;
+    public void setupStaticResources(Path path, String baseRoute) {
+        staticResources.put(path, baseRoute);
     }
 
     public WebApplication add(WebPage page) {
@@ -96,7 +96,7 @@ public final class WebApplication {
     }
 
     public WebApplication add(String route, HttpMethod method, Handler<RoutingContext> handler) {
-        this.customHandlers.add(new Triple<>(route, method, handler));
+        this.customHandlers.add(Triple.of(route, method, handler));
         return this;
     }
 
@@ -169,7 +169,8 @@ public final class WebApplication {
 
                 routing.handler(context -> {
                     try {
-                        method.invoke(restAPI.vertx(vertx).context(context));
+                        restAPI.data().load(context, vertx, null, restAPI, this);
+                        method.invoke(restAPI);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
@@ -203,7 +204,7 @@ public final class WebApplication {
                 routing.handler(authorizationHandler);
             }
             routing.handler(context -> {
-                webPage.context(context).vertx(vertx);
+                webPage.data().load(context, vertx, webPage, null, this);
                 context.end(webPage.render());
             });
         });
@@ -211,7 +212,8 @@ public final class WebApplication {
         staticResources.forEach((path, route) -> StaticFileProvider.init(path, route, HttpMethod.GET, router));
 
         copyResourceFiles();
-        StaticFileProvider.init(Path.of("htmx"), "/htmx", HttpMethod.GET, router);
+
+        StaticFileProvider.init(Path.of("htmx"), HttpMethod.GET, router);
 
         httpServer.requestHandler(router);
 

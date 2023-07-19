@@ -1,5 +1,6 @@
-target/
+.idea/sonarlint/*
 out/
+target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -37,3 +38,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/.idea/sonarlint/issuestore/0/c/0c933b3db6e8749766acb6be8c318c15087ea225
+/target/classes/de/allround/ssr/page/htmx/components/text/Abbreviation.class

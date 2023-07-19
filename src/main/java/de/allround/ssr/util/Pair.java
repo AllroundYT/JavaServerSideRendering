@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @Accessors(fluent = true)
 public class Pair<F, S> {
     private F first;
