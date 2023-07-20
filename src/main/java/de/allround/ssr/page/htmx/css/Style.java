@@ -1,7 +1,7 @@
 package de.allround.ssr.page.htmx.css;
 
-import de.allround.ssr.page.htmx.util.CSSSize;
 import de.allround.ssr.page.htmx.util.DisplayType;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,11 +18,16 @@ import java.util.concurrent.atomic.AtomicReference;
 @Setter
 @Accessors(fluent = true)
 @SuppressWarnings("all")
-@RequiredArgsConstructor(staticName = "selector")
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class Style {
     private final String selector;
     private final Map<String, Object> variables = new HashMap<>();
     private final Map<String, String> values = new HashMap<>();
+
+    @Contract("_ -> new")
+    public static @NotNull Style selector(String selector) {
+        return new Style(selector);
+    }
 
     public Style custom(String key, String value) {
         values.put(key, value);
@@ -65,7 +70,7 @@ public class Style {
         return Integer.toHexString(color.getRGB());
     }
 
-    public String clamp(CSSSize min, CSSSize ideal, CSSSize max) {
+    public static String clamp(String min, String ideal, String max) {
         return "clamp(" + min + ", " + ideal + ", " + max + ")";
     }
 

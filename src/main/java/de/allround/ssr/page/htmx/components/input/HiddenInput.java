@@ -4,4 +4,8 @@ public class HiddenInput extends InputComponent<HiddenInput> {
     protected HiddenInput() {
         super("hidden");
     }
+
+    public static HiddenInput create() {
+        return new HiddenInput();
+    }
 }

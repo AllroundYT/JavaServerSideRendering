@@ -19,7 +19,7 @@ public class Hyperlink extends Component<Hyperlink> {
     public RenderFunction preRender() {
         return data -> {
             Pair<URI, String> contentPair = content.apply(data);
-            return new Element("a").attr("src", contentPair.first().toString()).text(contentPair.second());
+            return new Element("a").attr("href", contentPair.first().toString()).text(contentPair.second());
         };
     }
 }

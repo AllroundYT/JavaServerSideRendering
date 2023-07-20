@@ -27,6 +27,7 @@ public abstract class Component<T extends Component<?>> {
     private final Map<String, Set<String>> attributes = new HashMap<>();
     private final Map<String, Set<Function<Data, Object>>> attributeFunctions = new HashMap<>();
     private final Set<String> classes = new HashSet<>();
+    protected String content;
     private Function<Data, String> id = generateId();
 
     public T clazz(String... classes) {
@@ -102,6 +103,11 @@ public abstract class Component<T extends Component<?>> {
         return (T) this;
     }
 
+    public T content(String content) {
+        this.content = content;
+        return (T) this;
+    }
+
 
     public abstract RenderFunction preRender();
 
@@ -120,6 +126,7 @@ public abstract class Component<T extends Component<?>> {
         Element element = preRender().render(data);
         classes.forEach(element::addClass);
         element.id(id.apply(data));
+        if (content != null) element.text(content);
         attributes.forEach((key, values) -> values.forEach(value -> element.attr(key, value)));
         attributeFunctions.forEach((key, functions) -> functions.forEach(dataObjectFunction -> element.attr(key, dataObjectFunction.apply(data).toString())));
         return element;
@@ -310,5 +317,19 @@ public abstract class Component<T extends Component<?>> {
         addAttribute("ssr-scroll", destination.name());
         return (T) this;
     }
+
+    public T remove(String triggerElementID) {
+        extension("ssr-utils");
+        addAttribute("ssr-remove", triggerElementID);
+        return (T) this;
+    }
+
     //</SSR UTILS EXTENSION>
+    //<REMOVE ME EXTENSION>
+    public T removeMe(String timing) {
+        extension("remove-me");
+        addAttribute("remove-me", timing);
+        return (T) this;
+    }
+    //</REMOVE ME EXTENSION>
 }

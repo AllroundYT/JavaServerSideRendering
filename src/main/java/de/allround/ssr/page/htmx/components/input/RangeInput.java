@@ -4,4 +4,8 @@ public class RangeInput extends InputComponent<RangeInput> {
     protected RangeInput() {
         super("range");
     }
+
+    public static RangeInput create() {
+        return new RangeInput();
+    }
 }

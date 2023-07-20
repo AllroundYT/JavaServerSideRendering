@@ -90,6 +90,11 @@ public final class WebApplication {
         staticResources.put(path, baseRoute);
     }
 
+
+    public void setupStaticResources(Path path) {
+        staticResources.put(path, null);
+    }
+
     public WebApplication add(WebPage page) {
         webPages.add(page);
         return this;
@@ -209,7 +214,10 @@ public final class WebApplication {
             });
         });
 
-        staticResources.forEach((path, route) -> StaticFileProvider.init(path, route, HttpMethod.GET, router));
+        staticResources.forEach((path, route) -> {
+            if (route == null) StaticFileProvider.init(path, HttpMethod.GET, router);
+            else StaticFileProvider.init(path, route, HttpMethod.GET, router);
+        });
 
         copyResourceFiles();
 

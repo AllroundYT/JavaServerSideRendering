@@ -27,8 +27,8 @@ public class LoginAndRegisterTabPane extends Template {
     @Override
     public void init() {
         add(
-                Button.create("Login"),
-                Button.create("Register"),
+                Button.create().content("Login"),
+                Button.create().content("Register"),
                 TabContainer.create(
                         Tab.create(
                                 Form.create(loginApiEndpoint, httpMethod).add(

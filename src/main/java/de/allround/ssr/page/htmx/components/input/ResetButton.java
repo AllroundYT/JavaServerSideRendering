@@ -4,4 +4,8 @@ public class ResetButton extends InputComponent<ResetButton> {
     protected ResetButton() {
         super("reset");
     }
+
+    public static ResetButton create() {
+        return new ResetButton();
+    }
 }

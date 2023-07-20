@@ -4,4 +4,8 @@ public class RadioButton extends InputComponent<RadioButton> {
     protected RadioButton() {
         super("radio");
     }
+
+    public static RadioButton create() {
+        return new RadioButton();
+    }
 }

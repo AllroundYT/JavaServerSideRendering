@@ -50,7 +50,7 @@ public abstract class Container<T extends Component<?>> extends Component<T> {
     public RenderFunction preRender() {
         return data -> {
             Element element = new Element(type);
-            components.addAll(initFunction.apply(data));
+            if (initFunction != null) components.addAll(initFunction.apply(data));
             components.forEach(component -> element.appendChild(component.render(data)));
             return element;
         };

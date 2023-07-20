@@ -306,7 +306,7 @@ public class InputComponent<T extends Component<?>> extends Component<T> {
 
     @Override
     public RenderFunction preRender() {
-        return data -> new Element(type);
+        return data -> new Element("input").attr("type", type);
     }
 
 

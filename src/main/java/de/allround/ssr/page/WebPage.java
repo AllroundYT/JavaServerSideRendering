@@ -1,10 +1,12 @@
 package de.allround.ssr.page;
 
 import de.allround.ssr.page.htmx.Component;
+import de.allround.ssr.page.htmx.StyleRenderFunction;
 import de.allround.ssr.util.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -16,9 +18,11 @@ import java.util.*;
 @Accessors(fluent = true)
 public abstract class WebPage {
     private final LinkedList<Component<?>> dom = new LinkedList<>();
+    private StyleRenderFunction styleRenderFunction = renderData -> Set.of();
     private final Data data = new Data();
     protected String lang = "de";
     protected String title = "Generated Webpage";
+    protected final Set<String> extensions = new HashSet<>();
 
 
     public abstract void init();
@@ -27,6 +31,11 @@ public abstract class WebPage {
         if (components != null) {
             this.dom.addAll(List.of(components));
         }
+        return this;
+    }
+
+    public WebPage loadExtensions(String... names) {
+        extensions.addAll(Set.of(names));
         return this;
     }
 
@@ -43,18 +52,32 @@ public abstract class WebPage {
         head.appendChild(new Element("title").text(title));
         head.append("<script src=\"//" + URI.create(data.request().absoluteURI()).getAuthority() + "/htmx/htmx.min.js\" />");
 
-        Set<String> extensions = new HashSet<>();
+        Element styles = new Element("style");
+        styleRenderFunction.renderStyles(data).forEach(style -> styles.appendText(style.compile()));
+        head.appendChild(styles);
+
 
         dom.forEach(component -> {
             Element element = component.render(data);
-            extensions.addAll(Arrays.stream(element.attr("hx-ext").split(",")).map(String::trim).toList());
+            registerExtensions(element);
             Element stylesElement = component.renderStyles(data);
             head.appendChild(stylesElement);
             body.appendChild(element);
         });
 
-        extensions.forEach(extension -> head.append("<script src=\"//" + URI.create(data.request().absoluteURI()).getAuthority() + "/htmx/" + extension + ".js\" />"));
+        extensions.forEach(extension -> {
+            if (!Objects.equals(extension.trim(), ""))
+                head.append("<script src=\"//" + URI.create(data.request().absoluteURI()).getAuthority() + "/htmx/" + extension.trim() + ".js\" />");
+        });
 
         return document.outerHtml();
+    }
+
+    private void registerExtensions(@NotNull Element element) {
+        if (element.childrenSize() > 0) {
+            element.children().forEach(this::registerExtensions);
+        } else {
+            extensions.addAll(Arrays.stream(element.attr("hx-ext").split(",")).map(String::trim).toList());
+        }
     }
 }

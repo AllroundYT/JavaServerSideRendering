@@ -4,4 +4,8 @@ public class Checkbox extends InputComponent<Checkbox> {
     protected Checkbox() {
         super("checkbox");
     }
+
+    public static Checkbox create() {
+        return new Checkbox();
+    }
 }

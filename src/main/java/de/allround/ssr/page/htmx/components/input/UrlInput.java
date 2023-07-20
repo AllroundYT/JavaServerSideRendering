@@ -4,4 +4,8 @@ public class UrlInput extends InputComponent<UrlInput> {
     protected UrlInput() {
         super("url");
     }
+
+    public static UrlInput create() {
+        return new UrlInput();
+    }
 }
