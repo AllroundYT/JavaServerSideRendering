@@ -56,12 +56,12 @@ public abstract class WebPage {
         head.append("<script src=\"//" + URI.create(data.request().absoluteURI()).getAuthority() + "/htmx/ssr-utils.js\" />");
 
         Element stylesElement = new Element("style");
-        styleRenderFunction.renderStyles(data).forEach(style -> stylesElement.appendText(style.compile()));
+        styleRenderFunction.renderStyles(data).stream().filter(style -> !stylesElement.text().contains(style.compile())).forEach(style -> stylesElement.appendText(style.compile()));
 
         dom.forEach(component -> {
             Element element = component.render(data);
             registerExtensions(element);
-            component.styles().renderStyles(data).forEach(style -> stylesElement.appendText(style.compile()));
+            component.styles().renderStyles(data).stream().filter(style -> !stylesElement.text().contains(style.compile())).forEach(style -> stylesElement.appendText(style.compile()));
             String localScript = component.script().apply(data);
             if (localScript != null && !this.script.contains(localScript)) this.script += "\n" + localScript;
             body.appendChild(element);
