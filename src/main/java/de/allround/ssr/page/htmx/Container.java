@@ -38,6 +38,16 @@ public abstract class Container<T extends Component<?>> extends Component<T> {
     }
 
     @Override
+    public Function<Data, String> script() {
+        return data -> {
+            String script = super.script().apply(data);
+            StringBuilder builder = new StringBuilder().append(script);
+            components.forEach(component -> builder.append("\n").append(component.script()));
+            return builder.toString();
+        };
+    }
+
+    @Override
     public StyleRenderFunction styles() {
         return data -> {
             Set<Style> styles = new HashSet<>();

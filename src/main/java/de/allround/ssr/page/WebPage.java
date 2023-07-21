@@ -1,5 +1,6 @@
 package de.allround.ssr.page;
 
+
 import de.allround.ssr.page.htmx.Component;
 import de.allround.ssr.page.htmx.StyleRenderFunction;
 import de.allround.ssr.util.Data;
@@ -23,6 +24,7 @@ public abstract class WebPage {
     protected String lang = "de";
     protected String title = "Generated Webpage";
     protected final Set<String> extensions = new HashSet<>();
+    private String script = "";
 
 
     public abstract void init();
@@ -51,22 +53,26 @@ public abstract class WebPage {
         Objects.requireNonNull(document.getElementsByTag("html").first()).attr("lang", lang);
         head.appendChild(new Element("title").text(title));
         head.append("<script src=\"//" + URI.create(data.request().absoluteURI()).getAuthority() + "/htmx/htmx.min.js\" />");
+        head.append("<script src=\"//" + URI.create(data.request().absoluteURI()).getAuthority() + "/htmx/ssr-utils.js\" />");
 
-        Element styles = new Element("style");
-        styleRenderFunction.renderStyles(data).forEach(style -> styles.appendText(style.compile()));
-        head.appendChild(styles);
-
+        Element stylesElement = new Element("style");
+        styleRenderFunction.renderStyles(data).forEach(style -> stylesElement.appendText(style.compile()));
 
         dom.forEach(component -> {
             Element element = component.render(data);
             registerExtensions(element);
-            Element stylesElement = component.renderStyles(data);
-            head.appendChild(stylesElement);
+            component.styles().renderStyles(data).forEach(style -> stylesElement.appendText(style.compile()));
+            String localScript = component.script().apply(data);
+            if (localScript != null && !this.script.contains(localScript)) this.script += "\n" + localScript;
             body.appendChild(element);
         });
 
+        head.appendChild(stylesElement);
+
+        if (script != null && !script.trim().equals("")) head.appendChild(new Element("script").text(this.script));
+
         extensions.forEach(extension -> {
-            if (!Objects.equals(extension.trim(), ""))
+            if (!Objects.equals(extension.trim(), "") && !extension.equalsIgnoreCase("ssr-utils"))
                 head.append("<script src=\"//" + URI.create(data.request().absoluteURI()).getAuthority() + "/htmx/" + extension.trim() + ".js\" />");
         });
 

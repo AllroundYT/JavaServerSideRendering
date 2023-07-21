@@ -1,6 +1,6 @@
 package de.allround.ssr.page.htmx;
 
-import de.allround.ssr.page.htmx.css.Style;
+
 import de.allround.ssr.page.htmx.util.ScrollDestination;
 import de.allround.ssr.util.Data;
 import lombok.AccessLevel;
@@ -103,6 +103,10 @@ public abstract class Component<T extends Component<?>> {
         return (T) this;
     }
 
+    public Function<Data, String> script() {
+        return data -> "";
+    }
+
     public T content(String content) {
         this.content = content;
         return (T) this;
@@ -113,13 +117,6 @@ public abstract class Component<T extends Component<?>> {
 
     public StyleRenderFunction styles() {
         return data -> Set.of();
-    }
-
-    public Element renderStyles(Data data) {
-        Element element = new Element("style");
-        Set<Style> styles = styles().renderStyles(data);
-        styles.forEach(style -> element.appendText(style.compile()));
-        return element;
     }
 
     public Element render(Data data) {
@@ -318,9 +315,9 @@ public abstract class Component<T extends Component<?>> {
         return (T) this;
     }
 
-    public T remove(String triggerElementID) {
+    public T toggleClasses(String classes) {
         extension("ssr-utils");
-        addAttribute("ssr-remove", triggerElementID);
+        addAttribute("ssr-toggle-class", classes);
         return (T) this;
     }
 

@@ -27,4 +27,11 @@ public abstract class RestAPI {
         if (data.response() == null || component == null) return;
         data.response().send(Json.encode(component));
     }
+
+    public void redirect(String url) {
+        if (data.request().headers().contains("HX-Request")) {
+            data.response().putHeader("HX-Redirect", url);
+            data.response().send();
+        } else data.context().redirect(url);
+    }
 }

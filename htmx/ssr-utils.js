@@ -9,9 +9,23 @@ htmx.defineExtension('ssr-utils', {
         }
         if (name === 'htmx:trigger') {
             tabFunctionality(target)
+            toggleClasses(target)
         }
     }
 });
+
+function toggleClasses(target) {
+    if (target.getAttribute("ssr-toggle-class")) {
+        const classes = target.getAttribute("ssr-toggle-class").split(",")
+        classes.forEach(clazz => {
+            if (target.classList.contains(clazz)) {
+                target.classList.remove(clazz)
+            } else {
+                target.classList.add(clazz)
+            }
+        })
+    }
+}
 
 function tabFunctionality(target) {
     if (target.getAttribute("ssr-tab-target")) {
