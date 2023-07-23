@@ -13,6 +13,11 @@ import org.jsoup.nodes.Element;
 @Accessors(fluent = true)
 @RequiredArgsConstructor(staticName = "create")
 public class Button extends Component<Button> {
+
+    public Button(String content) {
+        content(content);
+    }
+
     @Override
     public RenderFunction preRender() {
         return data -> new Element("button");

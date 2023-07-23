@@ -15,13 +15,13 @@ public class Span extends Component<Span> {
 
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("span").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull Span create(String content) {
         return new Span(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("span").text(content.apply(data));
     }
 }

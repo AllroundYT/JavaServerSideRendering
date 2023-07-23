@@ -12,22 +12,24 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.*;
 
 @Getter
 @Setter
 @Accessors(fluent = true)
 public abstract class WebPage {
+    protected final Set<String> extensions = new HashSet<>();
     private final LinkedList<Component<?>> dom = new LinkedList<>();
-    private StyleRenderFunction styleRenderFunction = renderData -> Set.of();
     private final Data data = new Data();
     protected String lang = "de";
     protected String title = "Generated Webpage";
-    protected final Set<String> extensions = new HashSet<>();
+    private StyleRenderFunction styleRenderFunction = renderData -> Set.of();
     private String script = "";
+    private Path faviconPath;
 
 
-    public abstract void init();
+    public abstract void init(Data data);
 
     public WebPage add(Component<?>... components) {
         if (components != null) {
@@ -44,7 +46,7 @@ public abstract class WebPage {
 
     public String render() {
         dom.clear();
-        init();
+        init(data);
         Document document = new Document("");
 
         Element head = document.head();
@@ -52,8 +54,8 @@ public abstract class WebPage {
 
         Objects.requireNonNull(document.getElementsByTag("html").first()).attr("lang", lang);
         head.appendChild(new Element("title").text(title));
-        head.append("<script src=\"//" + URI.create(data.request().absoluteURI()).getAuthority() + "/htmx/htmx.min.js\" />");
-        head.append("<script src=\"//" + URI.create(data.request().absoluteURI()).getAuthority() + "/htmx/ssr-utils.js\" />");
+        head.append("<script src=\"" + URI.create("/htmx/htmx.min.js") + "\" />");
+        head.append("<script src=\"" + URI.create("/htmx/ssr-utils.js") + "\" />");
 
         Element stylesElement = new Element("style");
         styleRenderFunction.renderStyles(data).stream().filter(style -> !stylesElement.text().contains(style.compile())).forEach(style -> stylesElement.appendText(style.compile()));
@@ -62,7 +64,7 @@ public abstract class WebPage {
             Element element = component.render(data);
             registerExtensions(element);
             component.styles().renderStyles(data).stream().filter(style -> !stylesElement.text().contains(style.compile())).forEach(style -> stylesElement.appendText(style.compile()));
-            String localScript = component.script().apply(data);
+            String localScript = component.script();
             if (localScript != null && !this.script.contains(localScript)) this.script += "\n" + localScript;
             body.appendChild(element);
         });
@@ -71,9 +73,10 @@ public abstract class WebPage {
 
         if (script != null && !script.trim().equals("")) head.appendChild(new Element("script").text(this.script));
 
+
         extensions.forEach(extension -> {
             if (!Objects.equals(extension.trim(), "") && !extension.equalsIgnoreCase("ssr-utils"))
-                head.append("<script src=\"//" + URI.create(data.request().absoluteURI()).getAuthority() + "/htmx/" + extension.trim() + ".js\" />");
+                head.append("<script src=\"" + URI.create("/htmx/" + extension.trim() + ".js") + "\" />");
         });
 
         return document.outerHtml();

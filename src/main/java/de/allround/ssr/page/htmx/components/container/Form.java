@@ -16,20 +16,6 @@ public class Form extends Container<Form> {
     private final Function<Data, String> action;
     private final HttpMethod method;
 
-    public Form acceptCharset(@NotNull Charset charset) {
-        addAttribute("accept-charset", charset.name());
-        return this;
-    }
-
-    @Override
-    public RenderFunction preRender() {
-        return data -> {
-            Element element = super.preRender().render(data);
-            element.attr("action", action.apply(data)).attr("method", method.name().toLowerCase());
-            return element;
-        };
-    }
-
     protected Form(Function<Data, String> action, HttpMethod method) {
         super("form");
         this.action = action;
@@ -42,5 +28,19 @@ public class Form extends Container<Form> {
 
     public static Form create(String action, HttpMethod method) {
         return new Form(data -> action, method);
+    }
+
+    public Form acceptCharset(@NotNull Charset charset) {
+        addAttribute("accept-charset", charset.name());
+        return this;
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> {
+            Element element = super.preRender().render(data);
+            element.attr("action", action.apply(data)).attr("method", method.name().toLowerCase());
+            return element;
+        };
     }
 }

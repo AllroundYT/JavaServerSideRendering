@@ -25,8 +25,22 @@ public class Style {
     private final Map<String, String> values = new HashMap<>();
 
     @Contract("_ -> new")
+    public static @NotNull Style custom(String style) {
+        return new Style(null) {
+            @Override
+            public String compile() {
+                return replaceVariables(style);
+            }
+        };
+    }
+
+    @Contract("_ -> new")
     public static @NotNull Style selector(String selector) {
         return new Style(selector);
+    }
+
+    public static String clamp(String min, String ideal, String max) {
+        return "clamp(" + min + ", " + ideal + ", " + max + ")";
     }
 
     public Style custom(String key, String value) {
@@ -68,10 +82,6 @@ public class Style {
     @Contract("_ -> new")
     private @NotNull String toHexString(@NotNull Color color) {
         return Integer.toHexString(color.getRGB());
-    }
-
-    public static String clamp(String min, String ideal, String max) {
-        return "clamp(" + min + ", " + ideal + ", " + max + ")";
     }
 
 

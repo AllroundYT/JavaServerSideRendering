@@ -14,13 +14,14 @@ import java.util.function.Function;
 public class SuperscriptText extends Component<SuperscriptText> {
 
     private final Function<Data, String> content;
+
+    @Contract("_ -> new")
+    public static @NotNull SuperscriptText create(String content) {
+        return new SuperscriptText(data -> content);
+    }
+
     @Override
     public RenderFunction preRender() {
         return data -> new Element("sup").text(content.apply(data));
-    }
-
-    @Contract("_ -> new")
-    public static @NotNull SuperscriptText create(String content){
-        return new SuperscriptText(data -> content);
     }
 }

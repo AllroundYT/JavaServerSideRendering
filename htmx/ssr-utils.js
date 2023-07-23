@@ -11,8 +11,30 @@ htmx.defineExtension('ssr-utils', {
             tabFunctionality(target)
             toggleClasses(target)
         }
+
+        if (name === 'htmx:beforeRequest') {
+            if (target.getAttribute("ssr-payload")) {
+                const xhr = evt.detail.xhr;
+                const xhrOptions = evt.detail.xhrOptions;
+                addCustomJson(xhr, xhrOptions, JSON.parse(target.getAttribute("ssr-payload")))
+            }
+        }
     }
 });
+
+function maybeClearInput(target) {
+    if (target.hasAttribute("ssr-clear-input")) {
+        const selector = target.getAttribute("ssr-clear-input")
+        console.info(selector)
+        document.querySelectorAll(selector).forEach(value => {
+            console.info("test " + value)
+            if (value instanceof HTMLInputElement) {
+                console.info("test2")
+                value.value = ""
+            }
+        })
+    }
+}
 
 function toggleClasses(target) {
     if (target.getAttribute("ssr-toggle-class")) {
@@ -24,6 +46,25 @@ function toggleClasses(target) {
                 target.classList.add(clazz)
             }
         })
+    }
+}
+
+function addCustomJson(xhr, xhrOptions, customData) {
+
+    // Convert the custom data to a JSON string
+    const jsonPayload = JSON.stringify(customData);
+
+    // Set the Content-Type header to indicate JSON data
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    // Set the JSON payload as the request body
+    xhr.send(jsonPayload);
+}
+
+function addJsonToRequestBody(xhr, args) {
+    if (args.jsonData) {
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(args.jsonData));
     }
 }
 

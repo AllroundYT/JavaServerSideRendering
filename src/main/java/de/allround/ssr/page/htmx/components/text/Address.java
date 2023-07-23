@@ -13,12 +13,12 @@ public class Address extends Component<Address> {
 
     protected final Function<Data, String> content;
 
+    public static Address create(String content) {
+        return new Address(data -> content);
+    }
+
     @Override
     public RenderFunction preRender() {
         return data -> new Element("address").text(content.apply(data));
-    }
-
-    public static Address create(String content) {
-        return new Address(data -> content);
     }
 }

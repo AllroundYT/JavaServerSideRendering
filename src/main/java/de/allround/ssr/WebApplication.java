@@ -25,8 +25,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +46,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @NoArgsConstructor(staticName = "build")
 @SuppressWarnings("ALL")
 public final class WebApplication {
+    private final Map<String, Object> dataStore = new HashMap<>();
     private final List<WebPage> webPages = new ArrayList<>();
     private final List<RestAPI> restAPIS = new ArrayList<>();
     private final List<Triple<String, HttpMethod, Handler<RoutingContext>>> customHandlers = new ArrayList<>();
@@ -102,6 +106,16 @@ public final class WebApplication {
 
     public WebApplication add(String route, HttpMethod method, Handler<RoutingContext> handler) {
         this.customHandlers.add(Triple.of(route, method, handler));
+        return this;
+    }
+
+    public <T> @Nullable T getStored(String key, @NotNull Class<T> tClass) {
+        if (!tClass.isInstance(dataStore.getOrDefault(key, null))) return null;
+        return tClass.cast(dataStore.get(key));
+    }
+
+    public WebApplication store(String key, Object o) {
+        dataStore.put(key, o);
         return this;
     }
 
@@ -208,6 +222,9 @@ public final class WebApplication {
                 authorizationProviders.forEach(authorizationHandler::addAuthorizationProvider);
                 routing.handler(authorizationHandler);
             }
+            if (webPage.faviconPath() != null) {
+                routing.handler(FaviconHandler.create(vertx, webPage.faviconPath().toString()));
+            }
             routing.handler(context -> {
                 webPage.data().load(context, vertx, webPage, null, this);
                 context.end(webPage.render());
@@ -219,18 +236,13 @@ public final class WebApplication {
             else StaticFileProvider.init(path, route, HttpMethod.GET, router);
         });
 
-        copyResourceFiles();
-
-        StaticFileProvider.init(Path.of("htmx"), HttpMethod.GET, router);
+        if (Files.isDirectory(Path.of("htmx"))) StaticFileProvider.init(Path.of("htmx"), HttpMethod.GET, router);
 
         httpServer.requestHandler(router);
-
         httpServer.listen(port);
 
         CompletableFuture.runAsync(new HtmxSourceUpdater());
     }
 
-    public void copyResourceFiles() {
-        //TODO: copy files for htmx and extensions from resource folder into htmx folder
-    }
+
 }

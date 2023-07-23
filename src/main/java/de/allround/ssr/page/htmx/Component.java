@@ -3,6 +3,7 @@ package de.allround.ssr.page.htmx;
 
 import de.allround.ssr.page.htmx.util.ScrollDestination;
 import de.allround.ssr.util.Data;
+import io.vertx.core.json.JsonObject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,24 @@ public abstract class Component<T extends Component<?>> {
     private final Map<String, Set<Function<Data, Object>>> attributeFunctions = new HashMap<>();
     private final Set<String> classes = new HashSet<>();
     protected String content;
-    private Function<Data, String> id = generateId();
+    private Function<Data, String> id = data -> null;
+
+    @Contract(pure = true)
+    public static @NotNull Function<Data, String> generateId() {
+        Character[] chars = new Character[]{
+                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+        };
+        List<Character> characterList = new ArrayList<>(List.of(chars));
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < ThreadLocalRandom.current().nextInt(16, 32); i++) {
+            Collections.shuffle(characterList);
+            stringBuilder.append(characterList.get(i));
+        }
+
+        return data -> stringBuilder.toString();
+    }
 
     public T clazz(String... classes) {
         this.classes.addAll(Set.of(classes));
@@ -43,23 +61,6 @@ public abstract class Component<T extends Component<?>> {
     public T id(Function<Data, String> id) {
         this.id = id;
         return (T) this;
-    }
-
-    @Contract(pure = true)
-    private @NotNull Function<Data, String> generateId() {
-        Character[] chars = new Character[]{
-                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-        };
-        List<Character> characterList = new ArrayList<>(List.of(chars));
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < ThreadLocalRandom.current().nextInt(16, 32); i++) {
-            Collections.shuffle(characterList);
-            stringBuilder.append(characterList.get(i));
-        }
-
-        return data -> stringBuilder.toString();
     }
 
     public T addAttribute(String key, Object value) {
@@ -103,8 +104,8 @@ public abstract class Component<T extends Component<?>> {
         return (T) this;
     }
 
-    public Function<Data, String> script() {
-        return data -> "";
+    public String script() {
+        return "";
     }
 
     public T content(String content) {
@@ -122,7 +123,8 @@ public abstract class Component<T extends Component<?>> {
     public Element render(Data data) {
         Element element = preRender().render(data);
         classes.forEach(element::addClass);
-        element.id(id.apply(data));
+        String id = this.id.apply(data);
+        if (id != null) element.id(id);
         if (content != null) element.text(content);
         attributes.forEach((key, values) -> values.forEach(value -> element.attr(key, value)));
         attributeFunctions.forEach((key, functions) -> functions.forEach(dataObjectFunction -> element.attr(key, dataObjectFunction.apply(data).toString())));
@@ -318,6 +320,18 @@ public abstract class Component<T extends Component<?>> {
     public T toggleClasses(String classes) {
         extension("ssr-utils");
         addAttribute("ssr-toggle-class", classes);
+        return (T) this;
+    }
+
+    public T json(@NotNull JsonObject jsonObject) {
+        extension("ssr-utils");
+        addAttribute("ssr-payload", jsonObject.encode());
+        return (T) this;
+    }
+
+    public T clearBySelector(String selector) {
+        extension("ssr-utils");
+        addAttribute("ssr-clear-input", selector);
         return (T) this;
     }
 

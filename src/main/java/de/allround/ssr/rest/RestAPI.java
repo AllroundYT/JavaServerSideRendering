@@ -6,25 +6,46 @@ import io.vertx.core.json.Json;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 
 @Setter
 @Getter
 @Accessors(fluent = true)
 
-/**
- * Simple interface which has to be imported by REST apis just to clarify them as such.
- */
 public abstract class RestAPI {
 
     protected final Data data = new Data();
 
-    protected void sendResponse(Component<?> oldComponent) {
-        if (data.response() == null || oldComponent == null) return;
-        data.response().send(oldComponent.render(data).outerHtml());
+    protected void sendResponse(Component<?> component) {
+        if (data.response() == null || component == null) return;
+        data.response().putHeader("Content-Type", "text/html");
+        data.response().setStatusCode(200);
+        data.response().send(component.render(data).outerHtml());
     }
 
+    protected void sendResponse(Component<?> @NotNull ... components) {
+        StringBuilder responseBodyBuilder = new StringBuilder();
+        for (Component<?> component : components) {
+            responseBodyBuilder.append(component.render(data).outerHtml());
+        }
+        if (responseBodyBuilder.isEmpty()) {
+            data.response().setStatusCode(204);
+            data.response().send();
+            return;
+        }
+        data.response().setStatusCode(200);
+        data.response().putHeader("Content-Type", "text/html");
+        data.response().send(responseBodyBuilder.toString());
+    }
+
+
     protected void sendResponse(Object component) {
-        if (data.response() == null || component == null) return;
+        if (component == null) {
+            data.response().setStatusCode(204);
+            data.response().send();
+            return;
+        }
+        data.response().setStatusCode(200);
         data.response().send(Json.encode(component));
     }
 

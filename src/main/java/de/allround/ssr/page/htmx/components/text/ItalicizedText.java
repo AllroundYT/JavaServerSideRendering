@@ -15,13 +15,13 @@ public class ItalicizedText extends Component<ItalicizedText> {
 
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("i").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull ItalicizedText create(String content) {
         return new ItalicizedText(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("i").text(content.apply(data));
     }
 }

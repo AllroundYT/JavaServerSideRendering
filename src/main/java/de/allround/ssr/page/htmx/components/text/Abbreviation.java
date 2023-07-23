@@ -14,13 +14,13 @@ import java.util.function.Function;
 public class Abbreviation extends Component<Abbreviation> {
     protected final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("abbr").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull Abbreviation create(String content) {
         return new Abbreviation(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("abbr").text(content.apply(data));
     }
 }

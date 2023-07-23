@@ -38,13 +38,11 @@ public abstract class Container<T extends Component<?>> extends Component<T> {
     }
 
     @Override
-    public Function<Data, String> script() {
-        return data -> {
-            String script = super.script().apply(data);
-            StringBuilder builder = new StringBuilder().append(script);
-            components.forEach(component -> builder.append("\n").append(component.script()));
-            return builder.toString();
-        };
+    public String script() {
+        String script = super.script();
+        StringBuilder builder = new StringBuilder().append(script);
+        components.forEach(component -> builder.append("\n").append(component.script()));
+        return builder.toString();
     }
 
     @Override

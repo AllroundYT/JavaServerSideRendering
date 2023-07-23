@@ -15,13 +15,13 @@ public class StrikethroughText extends Component<StrikethroughText> {
 
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("s").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull StrikethroughText create(String content) {
         return new StrikethroughText(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("s").text(content.apply(data));
     }
 }

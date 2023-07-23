@@ -1,27 +1,25 @@
 package de.allround.ssr.page.htmx.components.navigation;
 
 import de.allround.ssr.page.htmx.Component;
-import de.allround.ssr.page.htmx.RenderFunction;
-import de.allround.ssr.util.Data;
-import lombok.RequiredArgsConstructor;
+import de.allround.ssr.page.htmx.Container;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jsoup.nodes.Element;
 
-import java.util.function.Function;
 
-@RequiredArgsConstructor(staticName = "create")
-public class ListItem extends Component<ListItem> {
+public class ListItem extends Container<ListItem> {
 
-    private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("li").text(content.apply(data));
+    protected ListItem() {
+        super("li");
     }
 
     @Contract("_ -> new")
     public static @NotNull ListItem create(String content) {
-        return new ListItem(data -> content);
+        return new ListItem().content(content);
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull ListItem create(Component<?>... components) {
+        return new ListItem().add(components);
     }
 }

@@ -15,13 +15,13 @@ public class UnderlinedText extends Component<UnderlinedText> {
 
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("u").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull UnderlinedText create(String content) {
         return new UnderlinedText(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("u").text(content.apply(data));
     }
 }

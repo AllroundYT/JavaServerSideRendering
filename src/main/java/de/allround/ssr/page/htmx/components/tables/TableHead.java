@@ -15,13 +15,13 @@ public class TableHead extends Component<TableHead> {
 
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("th").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull TableHead of(String content) {
         return new TableHead(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("th").text(content.apply(data));
     }
 }

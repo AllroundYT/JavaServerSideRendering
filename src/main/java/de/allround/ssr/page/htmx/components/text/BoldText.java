@@ -15,13 +15,13 @@ public class BoldText extends Component<BoldText> {
 
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("b").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull BoldText create(String content) {
         return new BoldText(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("b").text(content.apply(data));
     }
 }

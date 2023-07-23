@@ -15,13 +15,13 @@ public class Text extends Component<Text> {
 
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("p").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull Text create(String content) {
         return new Text(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("p").text(content.apply(data));
     }
 }

@@ -13,12 +13,12 @@ public class Script extends Component<Script> {
 
     private final Function<Data, String> scriptContent;
 
+    public static Script create(String scriptContent) {
+        return new Script(data -> scriptContent);
+    }
+
     @Override
     public RenderFunction preRender() {
         return data -> new Element("script").text(scriptContent.apply(data));
-    }
-
-    public static Script create(String scriptContent) {
-        return new Script(data -> scriptContent);
     }
 }

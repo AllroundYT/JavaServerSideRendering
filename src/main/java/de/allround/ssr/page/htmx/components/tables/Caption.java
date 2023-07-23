@@ -15,13 +15,13 @@ public class Caption extends Component<Caption> {
 
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("caption").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull Caption of(String content) {
         return new Caption(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("caption").text(content.apply(data));
     }
 }

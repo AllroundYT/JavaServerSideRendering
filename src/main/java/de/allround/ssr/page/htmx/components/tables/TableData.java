@@ -15,13 +15,13 @@ public class TableData extends Component<TableData> {
 
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("td").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull TableData of(String content) {
         return new TableData(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("td").text(content.apply(data));
     }
 }

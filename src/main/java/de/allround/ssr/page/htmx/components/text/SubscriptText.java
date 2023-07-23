@@ -15,13 +15,13 @@ public class SubscriptText extends Component<SubscriptText> {
 
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("sub").text(content.apply(data));
-    }
-
     @Contract("_ -> new")
     public static @NotNull SubscriptText create(String content) {
         return new SubscriptText(data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("sub").text(content.apply(data));
     }
 }

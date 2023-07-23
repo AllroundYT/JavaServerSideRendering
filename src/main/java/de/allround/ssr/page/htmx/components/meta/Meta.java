@@ -16,13 +16,13 @@ public class Meta extends Component<Meta> {
     private final String name;
     private final Function<Data, String> content;
 
-    @Override
-    public RenderFunction preRender() {
-        return data -> new Element("meta").attr("name", name).attr("content", content.apply(data));
-    }
-
     @Contract("_, _ -> new")
     public static @NotNull Meta create(String name, String content) {
         return new Meta(name, data -> content);
+    }
+
+    @Override
+    public RenderFunction preRender() {
+        return data -> new Element("meta").attr("name", name).attr("content", content.apply(data));
     }
 }

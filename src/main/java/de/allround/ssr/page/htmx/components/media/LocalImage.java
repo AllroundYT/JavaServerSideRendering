@@ -14,13 +14,13 @@ import java.nio.file.Path;
 import java.util.function.Function;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class Video extends Component<Video> {
+public class LocalImage extends Component<LocalImage> {
 
     private final Function<Data, Triple<Path, String, String>> content;
 
     @Contract("_, _, _ -> new")
-    public static @NotNull Video create(Path path, String route, String alt) {
-        return new Video(data -> Triple.of(path, route, alt));
+    public static @NotNull LocalImage create(Path path, String route, String alt) {
+        return new LocalImage(data -> Triple.of(path, route, alt));
     }
 
     @Override
@@ -30,7 +30,7 @@ public class Video extends Component<Video> {
             Path filePath = appliedContent.first();
             data.webApplication().setupStaticResources(filePath, appliedContent.second());
             String route = appliedContent.second() + "/" + Path.of("").relativize(filePath);
-            return new Element("video").attr("src", route).attr("alt", appliedContent.third());
+            return new Element("img").attr("src", route).attr("alt", appliedContent.third());
         };
     }
 }

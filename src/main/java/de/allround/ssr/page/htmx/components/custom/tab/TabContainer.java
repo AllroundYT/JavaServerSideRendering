@@ -16,6 +16,10 @@ public class TabContainer extends Container<TabContainer> {
         extension("ssr-utils");
     }
 
+    public static TabContainer create(Component<?>... components) {
+        return new TabContainer().add(components);
+    }
+
     @Override
     public RenderFunction preRender() {
         return data -> {
@@ -26,10 +30,6 @@ public class TabContainer extends Container<TabContainer> {
             }
             return super.preRender().render(data);
         };
-    }
-
-    public static TabContainer create(Component<?>... components) {
-        return new TabContainer().add(components);
     }
 
     @Override
