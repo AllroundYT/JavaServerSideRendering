@@ -6,7 +6,7 @@
 
     <groupId>de.allround.ssr</groupId>
     <artifactId>JavaServerSideRendering</artifactId>
-    <version>v1.2.0-alpha</version>
+    <version>v1.0.0-BETA</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
