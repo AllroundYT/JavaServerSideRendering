@@ -4,10 +4,7 @@ package de.allround.ssr.page.htmx;
 import de.allround.ssr.page.htmx.util.ScrollDestination;
 import de.allround.ssr.util.Data;
 import io.vertx.core.json.JsonObject;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +20,7 @@ import java.util.function.Function;
 @Accessors(fluent = true)
 @Setter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(staticName = "create")
 public abstract class Component<T extends Component<?>> {
 
     private final Map<String, Set<String>> attributes = new HashMap<>();
@@ -30,6 +28,7 @@ public abstract class Component<T extends Component<?>> {
     private final Set<String> classes = new HashSet<>();
     protected String content;
     private Function<Data, String> id = data -> null;
+
 
     @Contract(pure = true)
     public static @NotNull Function<Data, String> generateId() {

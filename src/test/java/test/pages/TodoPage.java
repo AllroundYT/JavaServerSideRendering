@@ -2,6 +2,7 @@ package test.pages;
 
 import de.allround.ssr.page.WebPage;
 import de.allround.ssr.page.htmx.components.container.Div;
+import de.allround.ssr.page.htmx.components.custom.LazyComponent;
 import de.allround.ssr.page.htmx.components.input.Button;
 import de.allround.ssr.page.htmx.components.input.TextInput;
 import de.allround.ssr.page.htmx.components.navigation.UnorderedList;
@@ -18,6 +19,7 @@ public class TodoPage extends WebPage {
                 Div.create(
                         Headline.create().content("Todo-List"),
                         UnorderedList.create().id("todo-list").addAttribute("styles", "padding: 0"),
+                        LazyComponent.init(UnorderedList.class, URI.create("/")),
                         BreakLine.create(),
                         TextInput.create().placeholder("Write down a new todo...").name("todo-input").id("todo-input"),
                         Button.create().content("Add todo")
