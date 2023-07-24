@@ -18,8 +18,7 @@ public class TodoPage extends WebPage {
         add(
                 Div.create(
                         Headline.create().content("Todo-List"),
-                        UnorderedList.create().id("todo-list").addAttribute("styles", "padding: 0"),
-                        LazyComponent.init(UnorderedList.class, URI.create("/")),
+                        UnorderedList.create().id("todo-list").addAttribute("styles", "padding: 0")
                         BreakLine.create(),
                         TextInput.create().placeholder("Write down a new todo...").name("todo-input").id("todo-input"),
                         Button.create().content("Add todo")
